@@ -4,7 +4,7 @@ A comprehensive healthcare patient portal demonstration showcasing enterprise-le
 
 ## 🚀 Live Demo
 
-**[View Live Demo](https://earlhickson.github.io/patient-portal-demo/)**
+**[View Live Demo](https://epetaway.github.io/patient-portal-demo/)**
 
 ## 🏥 Project Overview
 
@@ -94,7 +94,7 @@ patient-portal-demo/
 ### Installation
 ```bash
 # Clone the repository
-git clone https://github.com/earlhickson/patient-portal-demo.git
+git clone https://github.com/epetaway/patient-portal-demo.git
 
 # Navigate to project directory
 cd patient-portal-demo
