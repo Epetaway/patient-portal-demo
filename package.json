@@ -1,0 +1,33 @@
+{
+  "name": "patient-portal-demo",
+  "version": "1.0.0",
+  "description": "Patient Engagement Portal UI Demo - Showcasing ASP.NET Core frontend development patterns",
+  "main": "index.html",
+  "scripts": {
+    "serve": "python3 -m http.server 8000",
+    "lint": "eslint js/**/*.js",
+    "format": "prettier --write '**/*.{js,css,html}'",
+    "deploy": "gh-pages -d ."
+  },
+  "keywords": [
+    "patient-portal",
+    "healthcare",
+    "spa",
+    "bootstrap",
+    "frontend",
+    "aspnet-core-patterns",
+    "portfolio"
+  ],
+  "author": "Earl Hickson",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
+    "gh-pages": "^6.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/earlhickson/patient-portal-demo.git"
+  },
+  "homepage": "https://earlhickson.github.io/patient-portal-demo/"
+}

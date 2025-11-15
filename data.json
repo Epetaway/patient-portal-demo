@@ -1,0 +1,153 @@
+{
+  "patients": [
+    {
+      "id": 1,
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "john.doe@email.com",
+      "phone": "(555) 123-4567",
+      "dateOfBirth": "1985-06-15",
+      "address": {
+        "street": "123 Main St",
+        "city": "Springfield",
+        "state": "IL",
+        "zipCode": "62701"
+      },
+      "insurance": {
+        "provider": "Blue Cross Blue Shield",
+        "memberId": "BC123456789",
+        "groupNumber": "GRP001"
+      },
+      "enrolledPrograms": ["Program A", "Program B"]
+    }
+  ],
+  "prescriptions": [
+    {
+      "id": 1,
+      "patientId": 1,
+      "medicationName": "Medication Alpha",
+      "dosage": "10mg",
+      "frequency": "Once daily",
+      "refillsRemaining": 2,
+      "nextRefillDate": "2024-12-15",
+      "status": "Active",
+      "prescriber": "Dr. Smith",
+      "pharmacy": "CVS Pharmacy - Main St"
+    },
+    {
+      "id": 2,
+      "patientId": 1,
+      "medicationName": "Medication Beta",
+      "dosage": "5mg",
+      "frequency": "Twice daily",
+      "refillsRemaining": 0,
+      "nextRefillDate": "2024-11-20",
+      "status": "Needs Approval",
+      "prescriber": "Dr. Johnson",
+      "pharmacy": "Walgreens - Oak Ave"
+    }
+  ],
+  "payments": [
+    {
+      "id": 1,
+      "patientId": 1,
+      "amount": 25.00,
+      "date": "2024-11-01",
+      "method": "Credit Card",
+      "status": "Completed",
+      "transactionId": "TXN123456",
+      "description": "Medication Alpha copay"
+    },
+    {
+      "id": 2,
+      "patientId": 1,
+      "amount": 45.00,
+      "date": "2024-10-15",
+      "method": "PayPal",
+      "status": "Completed",
+      "transactionId": "PP789012",
+      "description": "Medication Beta copay"
+    }
+  ],
+  "informationRequests": [
+    {
+      "id": 1,
+      "patientId": 1,
+      "type": "Insurance Coverage",
+      "description": "Need information about coverage for new medication",
+      "status": "In Progress",
+      "dateSubmitted": "2024-11-10",
+      "dateUpdated": "2024-11-12"
+    },
+    {
+      "id": 2,
+      "patientId": 1,
+      "type": "Side Effects",
+      "description": "Questions about potential side effects of Medication Alpha",
+      "status": "Completed",
+      "dateSubmitted": "2024-10-25",
+      "dateUpdated": "2024-10-27"
+    }
+  ],
+  "paymentMethods": [
+    {
+      "id": 1,
+      "patientId": 1,
+      "type": "Credit Card",
+      "lastFour": "4567",
+      "expiryMonth": "12",
+      "expiryYear": "2027",
+      "isDefault": true
+    }
+  ],
+  "consentSettings": [
+    {
+      "patientId": 1,
+      "emailCommunication": true,
+      "smsCommunication": false,
+      "dataSharing": true,
+      "marketingCommunication": false,
+      "lastUpdated": "2024-11-01"
+    }
+  ],
+  "programs": [
+    {
+      "id": 1,
+      "name": "Program A",
+      "description": "Comprehensive care program for chronic conditions"
+    },
+    {
+      "id": 2,
+      "name": "Program B",
+      "description": "Medication assistance program"
+    }
+  ],
+  "medications": [
+    {
+      "id": 1,
+      "name": "Medication Alpha",
+      "genericName": "Generic Alpha",
+      "category": "Cardiovascular"
+    },
+    {
+      "id": 2,
+      "name": "Medication Beta",
+      "genericName": "Generic Beta",
+      "category": "Diabetes"
+    },
+    {
+      "id": 3,
+      "name": "Medication Gamma",
+      "genericName": "Generic Gamma",
+      "category": "Respiratory"
+    }
+  ],
+  "requestTypes": [
+    "Insurance Coverage",
+    "Side Effects",
+    "Medication Information",
+    "Prior Authorization",
+    "Pharmacy Change",
+    "General Question"
+  ]
+}
