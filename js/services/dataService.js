@@ -228,6 +228,232 @@ class DataService {
             message: 'Registration completed successfully'
         };
     }
+
+    /**
+     * Get prescriptions by patient ID
+     */
+    async getPrescriptionsByPatientId(patientId) {
+        await this.delay(800);
+        
+        const mockPrescriptions = [
+            {
+                id: 1,
+                medicationName: 'Lisinopril 10mg',
+                dosage: '10mg',
+                frequency: 'Once daily',
+                prescriber: 'Dr. Sarah Johnson',
+                pharmacy: 'CVS Pharmacy - Main St',
+                refillsRemaining: 3,
+                status: 'Active',
+                statusClass: 'success',
+                canRefill: true,
+                nextRefillDate: '2025-12-01'
+            },
+            {
+                id: 2,
+                medicationName: 'Metformin 500mg',
+                dosage: '500mg',
+                frequency: 'Twice daily',
+                prescriber: 'Dr. Michael Chen',
+                pharmacy: 'Walgreens - Oak Ave',
+                refillsRemaining: 0,
+                status: 'Needs Approval',
+                statusClass: 'warning',
+                canRefill: false,
+                nextRefillDate: null
+            },
+            {
+                id: 3,
+                medicationName: 'Atorvastatin 20mg',
+                dosage: '20mg',
+                frequency: 'Once daily at bedtime',
+                prescriber: 'Dr. Emily Rodriguez',
+                pharmacy: 'Local Pharmacy',
+                refillsRemaining: 2,
+                status: 'Active',
+                statusClass: 'success',
+                canRefill: true,
+                nextRefillDate: '2025-11-25'
+            }
+        ];
+        
+        return mockPrescriptions;
+    }
+
+    /**
+     * Request prescription refill
+     */
+    async requestRefill(prescriptionId, pharmacy, comments = '') {
+        await this.delay(1200);
+        
+        const confirmationNumber = 'RF' + Date.now().toString().slice(-6);
+        
+        return {
+            success: true,
+            message: 'Refill request submitted successfully.',
+            confirmationNumber: confirmationNumber,
+            estimatedReady: '24-48 hours'
+        };
+    }
+
+    /**
+     * Get payments by patient ID
+     */
+    async getPaymentsByPatientId(patientId) {
+        await this.delay(600);
+        
+        const mockPayments = [
+            {
+                id: 1,
+                date: '2025-11-10',
+                description: 'Prescription Copay - Lisinopril',
+                amount: 25.00,
+                formattedAmount: '$25.00',
+                method: 'Credit Card (**** 1234)',
+                status: 'Completed',
+                transactionId: 'TXN789456123'
+            },
+            {
+                id: 2,
+                date: '2025-10-15',
+                description: 'Healthcare Service Fee',
+                amount: 150.00,
+                formattedAmount: '$150.00',
+                method: 'PayPal',
+                status: 'Completed',
+                transactionId: 'TXN654321987'
+            },
+            {
+                id: 3,
+                date: '2025-09-20',
+                description: 'Medication Copay - Metformin',
+                amount: 30.00,
+                formattedAmount: '$30.00',
+                method: 'Credit Card (**** 5678)',
+                status: 'Completed',
+                transactionId: 'TXN123789456'
+            }
+        ];
+        
+        return mockPayments;
+    }
+
+    /**
+     * Process payment
+     */
+    async processPayment(patientId, amount, paymentMethod, reason) {
+        await this.delay(2000);
+        
+        const transactionId = 'TXN' + Date.now().toString().slice(-9);
+        
+        const payment = {
+            id: Date.now(),
+            date: new Date().toLocaleDateString(),
+            description: reason,
+            amount: amount,
+            formattedAmount: `$${amount.toFixed(2)}`,
+            method: paymentMethod,
+            status: 'Completed',
+            transactionId: transactionId
+        };
+        
+        return {
+            success: true,
+            message: 'Payment processed successfully',
+            payment: payment
+        };
+    }
+
+    /**
+     * Get patient profile
+     */
+    async getPatientProfile(patientId) {
+        await this.delay(500);
+        
+        return {
+            id: patientId,
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'john.doe@email.com',
+            phone: '(555) 123-4567',
+            dateOfBirth: '1985-06-15',
+            gender: 'M',
+            ssnMasked: 'XXX-XX-1234',
+            emergencyContact: 'Jane Doe - (555) 987-6543',
+            address: {
+                line1: '123 Main Street',
+                line2: 'Apt 4B',
+                city: 'New York',
+                state: 'NY',
+                zipCode: '10001'
+            },
+            preferences: {
+                emailNotifications: true,
+                smsNotifications: true,
+                marketingEmails: false,
+                language: 'en',
+                timezone: 'America/New_York'
+            },
+            privacy: {
+                shareDataForResearch: false
+            },
+            security: {
+                twoFactorEnabled: false
+            },
+            lastPasswordChange: '2025-09-15',
+            recentActivity: [
+                {
+                    date: '2025-11-15',
+                    action: 'Account Login',
+                    device: 'Chrome on MacOS',
+                    location: 'New York, NY'
+                },
+                {
+                    date: '2025-11-14',
+                    action: 'Password Changed',
+                    device: 'Safari on iPhone',
+                    location: 'New York, NY'
+                },
+                {
+                    date: '2025-11-10',
+                    action: 'Profile Updated',
+                    device: 'Chrome on MacOS',
+                    location: 'New York, NY'
+                }
+            ]
+        };
+    }
+
+    /**
+     * Change user password
+     */
+    async changePassword(patientId, currentPassword, newPassword) {
+        await this.delay(1500);
+        
+        if (currentPassword !== 'password') {
+            return {
+                success: false,
+                message: 'Current password is incorrect.'
+            };
+        }
+        
+        return {
+            success: true,
+            message: 'Password changed successfully.'
+        };
+    }
+
+    /**
+     * Update security settings
+     */
+    async updateSecuritySettings(patientId, settings) {
+        await this.delay(800);
+        
+        return {
+            success: true,
+            message: 'Security settings updated successfully.'
+        };
+    }
 }
 
 // Export singleton instance
