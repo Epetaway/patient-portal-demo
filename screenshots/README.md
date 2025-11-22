@@ -1,158 +1,100 @@
 # Patient Portal Demo - Screenshots
 
-This directory contains preview images of the Patient Portal Demo application, showcasing all important workflows and features for portfolio mockup purposes.
+This directory contains preview images of the Patient Portal Demo application with **upgraded UI featuring Bootstrap icons, professional tables, and enhanced accessibility** for portfolio mockup purposes.
+
+## 🎨 UI Upgrades
+
+**Key Improvements:**
+- ✨ **Bootstrap SVG Icons** - Professional icon system (no emojis)
+- 📊 **Bootstrap Tables** - Responsive data tables with proper headers and hover states
+- ♿ **Accessibility** - Semantic HTML, ARIA labels, keyboard navigation
+- 🎯 **Professional Design** - Consistent spacing, colors, and Bootstrap design system
 
 ## Application Screens
 
-### Authentication & Registration
+### Authentication
 
 #### 01-login-page.png
-**Login Page** - The main entry point to the patient portal
-- Email and password authentication fields
+**Login Page** - Clean authentication interface
+- Professional form layout with Bootstrap styling
+- Email and password fields with proper validation
 - "Remember me" option
 - Link to registration
-- Demo credentials information
-
-#### 02-registration-step1.png
-**Registration Wizard - Step 1: Account Information**
-- Email address input
-- Password creation with validation
-- Password confirmation
-- Progress indicator (Step 1 of 4)
-
-#### 03-registration-step2.png
-**Registration Wizard - Step 2: Patient Information**
-- Personal details (first name, last name, date of birth, phone)
-- Complete address information (street, city, state, ZIP)
-- Form validation
-- Progress indicator (Step 2 of 4)
-
-#### 04-registration-step3.png
-**Registration Wizard - Step 3: Program & Insurance**
-- Primary medication selection
-- Assistance program selection
-- Insurance provider information
-- Member ID and group number
-- Progress indicator (Step 3 of 4)
-
-#### 05-registration-step4.png
-**Registration Wizard - Step 4: Consent & Review**
-- Summary of all entered information
-- Privacy policy and terms of service consent
-- Optional communication preferences
-- Complete registration button
-- Progress indicator (Step 4 of 4)
+- Demo credentials information box
+- **Icons**: Bootstrap heart-pulse icon for branding
 
 ### Main Application Features
 
 #### 06-dashboard.png
-**Patient Dashboard** - Main overview after login
-- Welcome message with patient name
-- Quick stats cards:
-  - Active Prescriptions (3)
-  - Information Requests (2)
-  - Payment History (5)
-  - Items needing attention (1)
-- Recent prescriptions list with status badges
-- Recent activity feed
-- Navigation sidebar with all menu options
+**Patient Dashboard** - Comprehensive overview with Bootstrap components
+- Welcome header with patient name
+- **Stats Cards** (Bootstrap cards with icons):
+  - Active Prescriptions (3) - Prescription icon
+  - Information Requests (2) - File icon
+  - Payment History (5) - Credit card icon
+  - Need Attention (1) - Warning icon
+- **Recent Prescriptions Table** with:
+  - Table headers: Medication, Prescriber, Next Refill, Refills Left, Status
+  - Status badges (Active/Refill Soon)
+  - Medication details with dosage
+  - Hover states for rows
+- **Recent Activity Table** with:
+  - Activity descriptions
+  - Dates
+  - Status indicators
+- **Navigation**: Sidebar with Bootstrap icons for all menu items
 
 #### 07-prescriptions.png
-**Prescriptions Management**
-- List of all active medications
-- Detailed information for each prescription:
-  - Medication name and dosage
-  - Prescribing doctor
-  - Status (Active/Refill Soon)
-  - Dosage instructions
-  - Quantity
-  - Next refill date
-  - Refills remaining
-- Request refill and view details buttons
-
-#### 08-payments.png
-**Payment Management**
-- Payment form with:
-  - Payment amount
-  - Payment method selection
-  - Card information (number, expiration, CVV)
-- Payment history list showing:
-  - Transaction descriptions
-  - Dates
-  - Amounts
-- Secure payment processing interface
-
-#### 09-information-requests.png
-**Information Requests**
-- New request submission form:
-  - Request type selection
-  - Detailed description field
-  - Delivery method options
-- Recent requests list with:
-  - Request titles
-  - Status badges (In Progress/Completed)
-  - Submission dates
-  - Request descriptions
-
-#### 10-profile.png
-**Profile Management**
-- Personal information section:
-  - First and last name
-  - Date of birth
-  - Phone number
-  - Email address
-- Address information section:
-  - Street address
-  - City, state, ZIP code
-- Insurance information section:
-  - Provider name
-  - Member ID
-  - Group number
-- Save/cancel buttons for each section
-
-#### 11-consent.png
-**Privacy & Consent Settings**
-- Communication preferences:
-  - Email communications
-  - SMS/text messages
-  - Phone calls
-- Health information sharing:
-  - Share with healthcare team
-  - Share with family members
-- Marketing & research:
-  - Marketing communications
-  - Medical research consent
-- Timestamps for each consent
-- Save preferences button
+**Prescriptions Management** - Detailed medication cards
+- **Professional Navigation**: Bootstrap icon sidebar
+- **Prescription Cards** for each medication:
+  - Medication name and dosage (header)
+  - Grid layout for prescription details:
+    - Prescribing doctor
+    - Status badge (color-coded)
+    - Dosage instructions
+    - Quantity
+    - Next refill date
+    - Refills remaining
+  - Action buttons: Request Refill (primary), View Details (outline)
+- Multiple prescriptions displayed in card format
+- Clear visual hierarchy
 
 ## Using These Screenshots
 
-These screenshots are designed for:
-- **Portfolio presentations** - Demonstrating healthcare UI/UX capabilities
-- **Project mockups** - Showing potential clients what a patient portal looks like
-- **Documentation** - Illustrating application features and workflows
-- **Design reviews** - Discussing interface improvements and enhancements
+These professional screenshots are designed for:
+- **Portfolio presentations** - Demonstrating healthcare UI/UX capabilities with Bootstrap
+- **Project mockups** - Showing potential clients professional patient portal interfaces
+- **Documentation** - Illustrating application features with proper design systems
+- **Design reviews** - Discussing interface improvements and Bootstrap best practices
 
 ## Key Features Demonstrated
 
-1. **Multi-step registration wizard** - Complex form workflow with validation
-2. **Responsive dashboard** - Overview with stats and recent activity
-3. **Medication management** - Prescription tracking and refill requests
-4. **Payment processing** - Secure payment form and transaction history
-5. **Information requests** - Document and records request system
-6. **Profile management** - Personal, address, and insurance information
-7. **Consent management** - Privacy preferences and communication settings
+1. **Bootstrap Icon System** - Professional SVG icons throughout the interface
+2. **Responsive Tables** - Data tables with proper structure, headers, and hover states
+3. **Cards & Components** - Bootstrap cards for stats and content organization
+4. **Accessibility** - Semantic HTML, ARIA labels, keyboard navigation support
+5. **Design System** - Consistent Bootstrap colors, spacing, and components
+6. **Professional UI** - Clean, modern healthcare interface without emojis
 
 ## Design Highlights
 
-- Clean, modern healthcare interface
-- Consistent color scheme (blue primary, status colors)
-- Clear navigation with sidebar
-- Status badges for quick information
-- Card-based layout for content organization
-- Responsive design principles
-- Accessibility considerations
+- **Bootstrap 5 Design System** - Consistent colors, spacing, and components
+- **SVG Icon Library** - Bootstrap Icons for scalable, crisp graphics
+- **Responsive Tables** - Professional data display with hover effects
+- **Status Badges** - Color-coded badges for quick status identification
+- **Card-based Layout** - Organized content in Bootstrap cards
+- **Accessibility First** - WCAG 2.1 AA compliant design
+- **Professional Typography** - Clear hierarchy and readable fonts
+
+## Technical Implementation
+
+- **Bootstrap Icons** - SVG-based icon system (no emoji characters)
+- **Bootstrap Tables** - `<table>` elements with proper thead/tbody structure
+- **Semantic HTML** - Proper use of headings, nav, main, aside elements
+- **Responsive Grid** - Bootstrap grid system for layout
+- **CSS Variables** - Consistent theming with CSS custom properties
 
 ---
 
-**Note:** All patient data shown in these screenshots is simulated and HIPAA-compliant for demonstration purposes only. No real patient information is displayed.
+**Note:** All patient data shown in these screenshots is simulated and HIPAA-compliant for demonstration purposes only. No real patient information is displayed. Screenshots showcase professional Bootstrap UI without emoji icons.
