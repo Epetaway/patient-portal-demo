@@ -11,6 +11,22 @@ A comprehensive healthcare patient portal demonstration showcasing enterprise-le
 - **Password**: Any password (minimum 6 characters)
 - **Registration**: Complete 4-step wizard or use demo login
 
+### 📸 Screenshots
+
+Preview images of all major workflows are available in the [`screenshots/`](./screenshots/) directory. These images are perfect for portfolio mockups and project presentations.
+
+**Quick Preview:**
+- [Login Page](./screenshots/01-login-page.png) - Authentication interface
+- [Registration Wizard](./screenshots/02-registration-step1.png) - 4-step signup process
+- [Dashboard](./screenshots/06-dashboard.png) - Patient overview with stats
+- [Prescriptions](./screenshots/07-prescriptions.png) - Medication management
+- [Payments](./screenshots/08-payments.png) - Payment processing
+- [Information Requests](./screenshots/09-information-requests.png) - Records request system
+- [Profile](./screenshots/10-profile.png) - Account management
+- [Consent Settings](./screenshots/11-consent.png) - Privacy preferences
+
+See the [screenshots README](./screenshots/README.md) for detailed descriptions of each workflow.
+
 ### Key Features to Explore
 1. **Login System** - Session-based authentication with validation
 2. **Registration Wizard** - 4-step process with form state persistence
