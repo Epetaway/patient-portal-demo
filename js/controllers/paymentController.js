@@ -9,22 +9,22 @@ import notificationService from '../services/notificationService.js';
 import ValidationService from '../services/validationService.js';
 
 class PaymentController {
-    static async showPayments(params = {}) {
-        try {
-            const pageContent = document.getElementById('page-content');
-            const user = authService.getCurrentUser();
-            
-            if (!user) {
-                notificationService.showError('User session not found');
-                return;
-            }
+  static async showPayments(params = {}) {
+    try {
+      const pageContent = document.getElementById('page-content');
+      const user = authService.getCurrentUser();
 
-            // Load payment data
-            const payments = await dataService.getPaymentsByPatientId(user.id);
-            const totalPaid = payments.reduce((sum, p) => sum + p.amount, 0);
-            const recentPayments = payments.slice(0, 5);
+      if (!user) {
+        notificationService.showError('User session not found');
+        return;
+      }
 
-            const paymentsHtml = `
+      // Load payment data
+      const payments = await dataService.getPaymentsByPatientId(user.id);
+      const totalPaid = payments.reduce((sum, p) => sum + p.amount, 0);
+      const recentPayments = payments.slice(0, 5);
+
+      const paymentsHtml = `
                 <div class="fade-in">
                     <div class="row mb-4">
                         <div class="col-12">
@@ -140,22 +140,21 @@ class PaymentController {
                 </div>
             `;
 
-            pageContent.innerHTML = paymentsHtml;
-            
-            // Setup payment form functionality
-            this.setupPaymentForm();
+      pageContent.innerHTML = paymentsHtml;
 
-        } catch (error) {
-            console.error('Payments page error:', error);
-            notificationService.showError('Failed to load payment data');
-        }
+      // Setup payment form functionality
+      this.setupPaymentForm();
+    } catch (error) {
+      console.error('Payments page error:', error);
+      notificationService.showError('Failed to load payment data');
     }
+  }
 
-    /**
-     * Render payment form
-     */
-    static renderPaymentForm() {
-        return `
+  /**
+   * Render payment form
+   */
+  static renderPaymentForm() {
+    return `
             <form id="paymentForm" novalidate>
                 <div class="mb-3">
                     <label for="paymentAmount" class="form-label">Payment Amount *</label>
@@ -245,23 +244,23 @@ class PaymentController {
                 </button>
             </form>
         `;
-    }
+  }
 
-    /**
-     * Render payment history
-     */
-    static renderPaymentHistory(payments) {
-        if (!payments.length) {
-            return `
+  /**
+   * Render payment history
+   */
+  static renderPaymentHistory(payments) {
+    if (!payments.length) {
+      return `
                 <div class="text-center py-5">
                     <i class="bi bi-receipt fs-1 text-muted mb-3"></i>
                     <h5 class="text-muted">No Payment History</h5>
                     <p class="text-muted">Your payment transactions will appear here.</p>
                 </div>
             `;
-        }
+    }
 
-        return `
+    return `
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
@@ -275,7 +274,9 @@ class PaymentController {
                         </tr>
                     </thead>
                     <tbody>
-                        ${payments.map(payment => `
+                        ${payments
+                          .map(
+                            payment => `
                             <tr>
                                 <td>${payment.date}</td>
                                 <td>${payment.description}</td>
@@ -284,150 +285,153 @@ class PaymentController {
                                 <td><span class="badge bg-success">Completed</span></td>
                                 <td><small class="text-muted">${payment.transactionId}</small></td>
                             </tr>
-                        `).join('')}
+                        `
+                          )
+                          .join('')}
                     </tbody>
                 </table>
             </div>
         `;
-    }
+  }
 
-    /**
-     * Setup payment form functionality
-     */
-    static setupPaymentForm() {
-        const form = document.getElementById('paymentForm');
-        const amountInput = document.getElementById('paymentAmount');
-        
-        // Update payment summary when amount changes
-        amountInput.addEventListener('input', () => {
-            const amount = parseFloat(amountInput.value) || 0;
-            document.getElementById('payment-amount-display').textContent = `$${amount.toFixed(2)}`;
-            document.getElementById('payment-total-display').textContent = `$${amount.toFixed(2)}`;
-        });
-        
-        // Format card number input
-        const cardNumberInput = document.getElementById('cardNumber');
-        cardNumberInput.addEventListener('input', (e) => {
-            let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-            const formattedInputValue = value.match(/.{1,4}/g)?.join(' ') || '';
-            e.target.value = formattedInputValue;
-        });
-        
-        // Format expiry input
-        const expiryInput = document.getElementById('expiry');
-        expiryInput.addEventListener('input', (e) => {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value.length >= 2) {
-                value = value.slice(0, 2) + '/' + value.slice(2, 4);
-            }
-            e.target.value = value;
-        });
-        
-        // Handle form submission
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.processPayment();
-        });
-    }
+  /**
+   * Setup payment form functionality
+   */
+  static setupPaymentForm() {
+    const form = document.getElementById('paymentForm');
+    const amountInput = document.getElementById('paymentAmount');
 
-    /**
-     * Process payment
-     */
-    static async processPayment() {
-        try {
-            const form = document.getElementById('paymentForm');
-            const formData = new FormData(form);
-            
-            const amount = parseFloat(formData.get('paymentAmount'));
-            const reason = formData.get('paymentReason');
-            const activeTab = document.querySelector('.tab-pane.active').id;
-            
-            // Basic validation
-            if (!amount || amount < 1) {
-                notificationService.showError('Please enter a valid payment amount.');
-                return;
-            }
-            
-            const paymentMethod = activeTab === 'card-payment' ? 'Credit Card' : 'PayPal';
-            
-            // Additional validation for credit card
-            if (activeTab === 'card-payment') {
-                const cardNumber = formData.get('cardNumber');
-                const cardName = formData.get('cardName');
-                const expiry = formData.get('expiry');
-                const cvv = formData.get('cvv');
-                
-                if (!cardNumber || !cardName || !expiry || !cvv) {
-                    notificationService.showError('Please fill in all credit card fields.');
-                    return;
-                }
-            }
-            
-            // Show loading state
-            const submitBtn = form.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing Payment...';
-            submitBtn.disabled = true;
-            
-            // Show processing notification
-            const loadingToast = notificationService.showLoading('Processing your payment...', 'Please wait');
-            
-            const user = authService.getCurrentUser();
-            
-            // Process payment
-            const result = await dataService.processPayment(
-                user.id,
-                amount,
-                paymentMethod,
-                reason
-            );
-            
-            // Dismiss loading notification
-            notificationService.dismissToast(loadingToast);
-            
-            if (result.success) {
-                // Show success modal with receipt
-                this.showPaymentSuccess(result.payment);
-                
-                // Clear form
-                form.reset();
-                document.getElementById('payment-amount-display').textContent = '$0.00';
-                document.getElementById('payment-total-display').textContent = '$0.00';
-                
-                // Refresh page after modal closes
-                const modal = document.getElementById('paymentSuccessModal');
-                modal.addEventListener('hidden.bs.modal', () => {
-                    this.showPayments();
-                }, { once: true });
-                
-            } else {
-                notificationService.showError(result.message || 'Payment processing failed.');
-            }
-            
-        } catch (error) {
-            console.error('Payment processing error:', error);
-            notificationService.showError('Payment failed due to a technical error. Please try again.');
-        } finally {
-            // Restore button state
-            const submitBtn = document.querySelector('#paymentForm button[type="submit"]');
-            if (submitBtn) {
-                submitBtn.innerHTML = '<i class="bi bi-credit-card me-2"></i>Process Payment';
-                submitBtn.disabled = false;
-            }
+    // Update payment summary when amount changes
+    amountInput.addEventListener('input', () => {
+      const amount = parseFloat(amountInput.value) || 0;
+      document.getElementById('payment-amount-display').textContent = `$${amount.toFixed(2)}`;
+      document.getElementById('payment-total-display').textContent = `$${amount.toFixed(2)}`;
+    });
+
+    // Format card number input
+    const cardNumberInput = document.getElementById('cardNumber');
+    cardNumberInput.addEventListener('input', e => {
+      let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+      const formattedInputValue = value.match(/.{1,4}/g)?.join(' ') || '';
+      e.target.value = formattedInputValue;
+    });
+
+    // Format expiry input
+    const expiryInput = document.getElementById('expiry');
+    expiryInput.addEventListener('input', e => {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value.length >= 2) {
+        value = value.slice(0, 2) + '/' + value.slice(2, 4);
+      }
+      e.target.value = value;
+    });
+
+    // Handle form submission
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      this.processPayment();
+    });
+  }
+
+  /**
+   * Process payment
+   */
+  static async processPayment() {
+    try {
+      const form = document.getElementById('paymentForm');
+      const formData = new FormData(form);
+
+      const amount = parseFloat(formData.get('paymentAmount'));
+      const reason = formData.get('paymentReason');
+      const activeTab = document.querySelector('.tab-pane.active').id;
+
+      // Basic validation
+      if (!amount || amount < 1) {
+        notificationService.showError('Please enter a valid payment amount.');
+        return;
+      }
+
+      const paymentMethod = activeTab === 'card-payment' ? 'Credit Card' : 'PayPal';
+
+      // Additional validation for credit card
+      if (activeTab === 'card-payment') {
+        const cardNumber = formData.get('cardNumber');
+        const cardName = formData.get('cardName');
+        const expiry = formData.get('expiry');
+        const cvv = formData.get('cvv');
+
+        if (!cardNumber || !cardName || !expiry || !cvv) {
+          notificationService.showError('Please fill in all credit card fields.');
+          return;
         }
-    }
+      }
 
-    /**
-     * Show payment success modal
-     */
-    static showPaymentSuccess(payment) {
+      // Show loading state
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML =
+        '<span class="spinner-border spinner-border-sm me-2"></span>Processing Payment...';
+      submitBtn.disabled = true;
+
+      // Show processing notification
+      const loadingToast = notificationService.showLoading(
+        'Processing your payment...',
+        'Please wait'
+      );
+
+      const user = authService.getCurrentUser();
+
+      // Process payment
+      const result = await dataService.processPayment(user.id, amount, paymentMethod, reason);
+
+      // Dismiss loading notification
+      notificationService.dismissToast(loadingToast);
+
+      if (result.success) {
+        // Show success modal with receipt
+        this.showPaymentSuccess(result.payment);
+
+        // Clear form
+        form.reset();
+        document.getElementById('payment-amount-display').textContent = '$0.00';
+        document.getElementById('payment-total-display').textContent = '$0.00';
+
+        // Refresh page after modal closes
         const modal = document.getElementById('paymentSuccessModal');
-        const messageElement = document.getElementById('payment-success-message');
-        const receiptElement = document.getElementById('receipt-details');
-        
-        messageElement.textContent = `Your payment of ${payment.formattedAmount} has been processed successfully.`;
-        
-        receiptElement.innerHTML = `
+        modal.addEventListener(
+          'hidden.bs.modal',
+          () => {
+            this.showPayments();
+          },
+          { once: true }
+        );
+      } else {
+        notificationService.showError(result.message || 'Payment processing failed.');
+      }
+    } catch (error) {
+      console.error('Payment processing error:', error);
+      notificationService.showError('Payment failed due to a technical error. Please try again.');
+    } finally {
+      // Restore button state
+      const submitBtn = document.querySelector('#paymentForm button[type="submit"]');
+      if (submitBtn) {
+        submitBtn.innerHTML = '<i class="bi bi-credit-card me-2"></i>Process Payment';
+        submitBtn.disabled = false;
+      }
+    }
+  }
+
+  /**
+   * Show payment success modal
+   */
+  static showPaymentSuccess(payment) {
+    const modal = document.getElementById('paymentSuccessModal');
+    const messageElement = document.getElementById('payment-success-message');
+    const receiptElement = document.getElementById('receipt-details');
+
+    messageElement.textContent = `Your payment of ${payment.formattedAmount} has been processed successfully.`;
+
+    receiptElement.innerHTML = `
             <div class="d-flex justify-content-between mb-2">
                 <strong>Amount:</strong>
                 <span>${payment.formattedAmount}</span>
@@ -445,10 +449,10 @@ class PaymentController {
                 <span>${payment.date}</span>
             </div>
         `;
-        
-        const bootstrapModal = new bootstrap.Modal(modal);
-        bootstrapModal.show();
-    }
+
+    const bootstrapModal = new bootstrap.Modal(modal);
+    bootstrapModal.show();
+  }
 }
 
 // Make globally available
