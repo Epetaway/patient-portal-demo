@@ -45,7 +45,7 @@ class ValidationFramework {
     // [EmailAddress] attribute equivalent
     email: (value, message = 'Please enter a valid email address') => {
       if (!value) return null;
-      const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return emailRegex.test(value) ? null : message;
     },
 
@@ -62,9 +62,8 @@ class ValidationFramework {
     // [Phone] attribute equivalent
     phone: (value, message = 'Please enter a valid phone number') => {
       if (!value) return null;
-      const phoneRegex =
-        /^[\\+]?[1-9][\\d]{0,3}[\\s\\-\\.]?[\\(]?[\\d]{3}[\\)]?[\\s\\-\\.]?[\\d]{3}[\\s\\-\\.]?[\\d]{4}$/;
-      return phoneRegex.test(value.replace(/[\\s\\-\\.\\(\\)]/g, '')) ? null : message;
+      const phoneRegex = /^[+]?[1-9]\d{0,3}[\s\-.()]?\d{3}[\s\-.()]?\d{3}[\s\-.]?\d{4}$/;
+      return phoneRegex.test(value.replace(/[\s\-.()/]/g, '')) ? null : message;
     },
 
     // [Compare] attribute equivalent
