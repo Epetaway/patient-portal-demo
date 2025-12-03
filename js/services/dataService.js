@@ -12,6 +12,13 @@ class DataService {
   }
 
   /**
+   * Utility method to simulate network delay
+   */
+  async delay(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  /**
    * Initialize data service - loads mock data from JSON file
    * Similar to Entity Framework DbContext initialization
    */
