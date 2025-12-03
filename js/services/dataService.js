@@ -66,31 +66,8 @@ class DataService {
     }
 
     /**
-     * Prescription data operations
+     * Prescription data operations - See full implementations below (avoiding duplicates)
      */
-    async getPrescriptionsByPatientId(patientId) {
-        await this.initialize();
-        return this.data.prescriptions
-            .filter(p => p.patientId === patientId)
-            .map(p => new Prescription(p));
-    }
-
-    async requestRefill(prescriptionId, pharmacy = null) {
-        await this.initialize();
-        const prescription = this.data.prescriptions.find(p => p.id === prescriptionId);
-        if (prescription && prescription.refillsRemaining > 0) {
-            // Simulate refill request processing
-            return {
-                success: true,
-                message: `Refill request submitted for ${prescription.medicationName}`,
-                confirmationNumber: 'RX' + Math.random().toString(36).substr(2, 9).toUpperCase()
-            };
-        }
-        return {
-            success: false,
-            message: 'Unable to process refill request'
-        };
-    }
 
     /**
      * Information Request operations
@@ -123,38 +100,8 @@ class DataService {
     }
 
     /**
-     * Payment operations
+     * Payment operations - See full implementations below (avoiding duplicates)
      */
-    async getPaymentsByPatientId(patientId) {
-        await this.initialize();
-        return this.data.payments
-            .filter(p => p.patientId === patientId)
-            .map(p => new Payment(p));
-    }
-
-    async processPayment(patientId, amount, method, description) {
-        await this.initialize();
-        // Simulate payment processing delay
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        const newPayment = {
-            id: this.data.payments.length + 1,
-            patientId: patientId,
-            amount: parseFloat(amount),
-            date: new Date().toISOString().split('T')[0],
-            method: method,
-            status: 'Completed',
-            transactionId: 'TXN' + Math.random().toString(36).substr(2, 9).toUpperCase(),
-            description: description
-        };
-        
-        this.data.payments.push(newPayment);
-        return {
-            success: true,
-            payment: new Payment(newPayment),
-            message: 'Payment processed successfully'
-        };
-    }
 
     /**
      * Reference data operations

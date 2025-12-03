@@ -66,8 +66,8 @@ class ValidationService {
 
         phone: (value, message = 'Please enter a valid phone number') => {
             if (!value) return null;
-            const phoneRegex = /^[\+]?[1-9][\d]{0,3}[\s\-\.]?[\(]?[\d]{3}[\)]?[\s\-\.]?[\d]{3}[\s\-\.]?[\d]{4}$/;
-            return phoneRegex.test(value.replace(/[\s\-\.\(\)]/g, '')) ? null : message;
+            const phoneRegex = /^[+]?[1-9][\d]{0,3}[\s\-.?]?[(]?[\d]{3}[)]?[\s\-.?]?[\d]{3}[\s\-.?]?[\d]{4}$/;
+            return phoneRegex.test(value.replace(/[\s\-.()/]/g, '')) ? null : message;
         },
 
         date: (value, message = 'Please enter a valid date') => {
