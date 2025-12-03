@@ -9,20 +9,20 @@ import notificationService from '../services/notificationService.js';
 import ValidationService from '../services/validationService.js';
 
 class PrescriptionController {
-    static async showPrescriptions(params = {}) {
-        try {
-            const pageContent = document.getElementById('page-content');
-            const user = authService.getCurrentUser();
-            
-            if (!user) {
-                notificationService.showError('User session not found');
-                return;
-            }
+  static async showPrescriptions(params = {}) {
+    try {
+      const pageContent = document.getElementById('page-content');
+      const user = authService.getCurrentUser();
 
-            // Load prescription data
-            const prescriptions = await dataService.getPrescriptionsByPatientId(user.id);
+      if (!user) {
+        notificationService.showError('User session not found');
+        return;
+      }
 
-            const prescriptionsHtml = `
+      // Load prescription data
+      const prescriptions = await dataService.getPrescriptionsByPatientId(user.id);
+
+      const prescriptionsHtml = `
                 <div class="fade-in">
                     <div class="row mb-4">
                         <div class="col-12">
@@ -44,7 +44,7 @@ class PrescriptionController {
                         <div class="col-sm-6 col-lg-3 mb-3">
                             <div class="card bg-success text-white">
                                 <div class="card-body text-center">
-                                    <h3 class="mb-1">${prescriptions.filter(p => p.canRefill).length}</h3>
+                                    <h3 class="mb-1">${prescriptions.filter((p) => p.canRefill).length}</h3>
                                     <p class="mb-0">Available for Refill</p>
                                 </div>
                             </div>
@@ -52,7 +52,7 @@ class PrescriptionController {
                         <div class="col-sm-6 col-lg-3 mb-3">
                             <div class="card bg-warning text-dark">
                                 <div class="card-body text-center">
-                                    <h3 class="mb-1">${prescriptions.filter(p => !p.canRefill).length}</h3>
+                                    <h3 class="mb-1">${prescriptions.filter((p) => !p.canRefill).length}</h3>
                                     <p class="mb-0">Need Attention</p>
                                 </div>
                             </div>
@@ -134,31 +134,32 @@ class PrescriptionController {
                 </div>
             `;
 
-            pageContent.innerHTML = prescriptionsHtml;
-
-        } catch (error) {
-            console.error('Prescriptions page error:', error);
-            notificationService.showError('Failed to load prescription data');
-        }
+      pageContent.innerHTML = prescriptionsHtml;
+    } catch (error) {
+      console.error('Prescriptions page error:', error);
+      notificationService.showError('Failed to load prescription data');
     }
+  }
 
-    /**
-     * Render prescriptions list
-     */
-    static renderPrescriptionsList(prescriptions) {
-        if (!prescriptions.length) {
-            return `
+  /**
+   * Render prescriptions list
+   */
+  static renderPrescriptionsList(prescriptions) {
+    if (!prescriptions.length) {
+      return `
                 <div class="text-center py-5">
                     <i class="bi bi-prescription2 fs-1 text-muted mb-3"></i>
                     <h5 class="text-muted">No Prescriptions Found</h5>
                     <p class="text-muted">Contact your healthcare provider to add prescriptions to your account.</p>
                 </div>
             `;
-        }
+    }
 
-        return `
+    return `
             <div class="row">
-                ${prescriptions.map(rx => `
+                ${prescriptions
+                  .map(
+                    (rx) => `
                     <div class="col-lg-6 mb-4">
                         <div class="card h-100">
                             <div class="card-header d-flex justify-content-between align-items-center">
@@ -195,112 +196,126 @@ class PrescriptionController {
                                     <p class="mb-0">${rx.pharmacy}</p>
                                 </div>
                                 
-                                ${rx.nextRefillDate ? `
+                                ${
+                                  rx.nextRefillDate
+                                    ? `
                                     <div class="mb-3">
                                         <small class="text-muted">Next Refill Available</small>
                                         <p class="mb-0">${rx.nextRefillDate}</p>
                                     </div>
-                                ` : ''}
+                                `
+                                    : ''
+                                }
                             </div>
                             <div class="card-footer">
-                                ${rx.canRefill ? `
+                                ${
+                                  rx.canRefill
+                                    ? `
                                     <button class="btn btn-primary btn-sm w-100" 
                                             onclick="PrescriptionController.openRefillModal(${rx.id}, '${rx.medicationName}', '${rx.pharmacy}')">
                                         <i class="bi bi-arrow-repeat me-2"></i>Request Refill
                                     </button>
-                                ` : `
+                                `
+                                    : `
                                     <button class="btn btn-outline-secondary btn-sm w-100" disabled>
                                         <i class="bi bi-exclamation-triangle me-2"></i>
                                         ${rx.status === 'Needs Approval' ? 'Awaiting Approval' : 'No Refills Available'}
                                     </button>
-                                `}
+                                `
+                                }
                             </div>
                         </div>
                     </div>
-                `).join('')}
+                `
+                  )
+                  .join('')}
             </div>
         `;
+  }
+
+  /**
+   * Open refill modal for specific prescription
+   */
+  static openRefillModal(prescriptionId, medicationName, currentPharmacy) {
+    // Populate modal fields
+    document.getElementById('prescriptionId').value = prescriptionId;
+    document.getElementById('medicationDisplay').textContent = medicationName;
+
+    // Pre-select current pharmacy if available
+    const pharmacySelect = document.getElementById('pharmacy');
+    if (pharmacySelect) {
+      const option = Array.from(pharmacySelect.options).find(
+        (opt) => opt.value === currentPharmacy
+      );
+      if (option) {
+        pharmacySelect.value = currentPharmacy;
+      }
     }
 
-    /**
-     * Open refill modal for specific prescription
-     */
-    static openRefillModal(prescriptionId, medicationName, currentPharmacy) {
-        // Populate modal fields
-        document.getElementById('prescriptionId').value = prescriptionId;
-        document.getElementById('medicationDisplay').textContent = medicationName;
-        
-        // Pre-select current pharmacy if available
-        const pharmacySelect = document.getElementById('pharmacy');
-        if (pharmacySelect) {
-            const option = Array.from(pharmacySelect.options).find(opt => opt.value === currentPharmacy);
-            if (option) {
-                pharmacySelect.value = currentPharmacy;
-            }
-        }
-        
-        // Show modal
-        const modal = new bootstrap.Modal(document.getElementById('refillModal'));
-        modal.show();
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('refillModal'));
+    modal.show();
+  }
+
+  /**
+   * Submit refill request
+   */
+  static async submitRefillRequest() {
+    try {
+      const form = document.getElementById('refillForm');
+      const formData = new FormData(form);
+
+      const prescriptionId = parseInt(formData.get('prescriptionId'));
+      const pharmacy = formData.get('pharmacy');
+      const comments = formData.get('comments');
+
+      // Validate required fields
+      if (!pharmacy) {
+        notificationService.showError('Please select a pharmacy.');
+        return;
+      }
+
+      // Show loading state
+      const submitBtn = document.querySelector('#refillModal .btn-primary');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML =
+        '<span class="spinner-border spinner-border-sm me-2"></span>Submitting...';
+      submitBtn.disabled = true;
+
+      // Submit refill request
+      const result = await dataService.requestRefill(prescriptionId, pharmacy);
+
+      if (result.success) {
+        notificationService.showSuccess(
+          `${result.message}<br><strong>Confirmation #:</strong> ${result.confirmationNumber}`
+        );
+
+        // Close modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('refillModal'));
+        modal.hide();
+
+        // Clear form
+        form.reset();
+
+        // Refresh prescriptions list after short delay
+        setTimeout(() => {
+          this.showPrescriptions();
+        }, 1000);
+      } else {
+        notificationService.showError(result.message);
+      }
+    } catch (error) {
+      console.error('Refill request error:', error);
+      notificationService.showError('Failed to submit refill request. Please try again.');
+    } finally {
+      // Restore button state
+      const submitBtn = document.querySelector('#refillModal .btn-primary');
+      if (submitBtn) {
+        submitBtn.innerHTML = '<i class="bi bi-send me-2"></i>Submit Refill Request';
+        submitBtn.disabled = false;
+      }
     }
-
-    /**
-     * Submit refill request
-     */
-    static async submitRefillRequest() {
-        try {
-            const form = document.getElementById('refillForm');
-            const formData = new FormData(form);
-            
-            const prescriptionId = parseInt(formData.get('prescriptionId'));
-            const pharmacy = formData.get('pharmacy');
-            const comments = formData.get('comments');
-
-            // Validate required fields
-            if (!pharmacy) {
-                notificationService.showError('Please select a pharmacy.');
-                return;
-            }
-
-            // Show loading state
-            const submitBtn = document.querySelector('#refillModal .btn-primary');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Submitting...';
-            submitBtn.disabled = true;
-
-            // Submit refill request
-            const result = await dataService.requestRefill(prescriptionId, pharmacy);
-
-            if (result.success) {
-                notificationService.showSuccess(`${result.message}<br><strong>Confirmation #:</strong> ${result.confirmationNumber}`);
-                
-                // Close modal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('refillModal'));
-                modal.hide();
-                
-                // Clear form
-                form.reset();
-                
-                // Refresh prescriptions list after short delay
-                setTimeout(() => {
-                    this.showPrescriptions();
-                }, 1000);
-            } else {
-                notificationService.showError(result.message);
-            }
-
-        } catch (error) {
-            console.error('Refill request error:', error);
-            notificationService.showError('Failed to submit refill request. Please try again.');
-        } finally {
-            // Restore button state
-            const submitBtn = document.querySelector('#refillModal .btn-primary');
-            if (submitBtn) {
-                submitBtn.innerHTML = '<i class="bi bi-send me-2"></i>Submit Refill Request';
-                submitBtn.disabled = false;
-            }
-        }
-    }
+  }
 }
 
 // Make globally available

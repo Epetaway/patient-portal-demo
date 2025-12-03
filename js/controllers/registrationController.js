@@ -11,27 +11,27 @@ import notificationService from '../services/notificationService.js';
 import ValidationService from '../services/validationService.js';
 
 class RegistrationController {
-    static registrationForm = new RegistrationForm();
-    static currentStep = 1;
-    static totalSteps = 4;
-    
-    static async showRegistration(params = {}) {
-        // Check if already authenticated
-        if (authService.checkAuthentication()) {
-            routingService.navigate('dashboard');
-            return;
-        }
+  static registrationForm = new RegistrationForm();
+  static currentStep = 1;
+  static totalSteps = 4;
 
-        // Load saved progress if any
-        this.loadSavedProgress();
-        
-        // Get step from params or use current
-        const step = parseInt(params.step) || this.currentStep;
-        this.currentStep = Math.max(1, Math.min(step, this.totalSteps));
-        
-        const pageContent = document.getElementById('page-content');
-        
-        const registrationHtml = `
+  static async showRegistration(params = {}) {
+    // Check if already authenticated
+    if (authService.checkAuthentication()) {
+      routingService.navigate('dashboard');
+      return;
+    }
+
+    // Load saved progress if any
+    this.loadSavedProgress();
+
+    // Get step from params or use current
+    const step = parseInt(params.step) || this.currentStep;
+    this.currentStep = Math.max(1, Math.min(step, this.totalSteps));
+
+    const pageContent = document.getElementById('page-content');
+
+    const registrationHtml = `
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="card shadow">
@@ -61,15 +61,17 @@ class RegistrationController {
                             <!-- Navigation -->
                             <div class="d-flex justify-content-between mt-4">
                                 <div>
-                                    ${this.currentStep > 1 ? 
-                                        '<button type="button" class="btn btn-outline-secondary" onclick="RegistrationController.previousStep()"><i class="bi bi-arrow-left me-2"></i>Previous</button>' : 
-                                        '<a href="#login" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-2"></i>Back to Login</a>'
+                                    ${
+                                      this.currentStep > 1
+                                        ? '<button type="button" class="btn btn-outline-secondary" onclick="RegistrationController.previousStep()"><i class="bi bi-arrow-left me-2"></i>Previous</button>'
+                                        : '<a href="#login" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-2"></i>Back to Login</a>'
                                     }
                                 </div>
                                 <div>
-                                    ${this.currentStep < this.totalSteps ? 
-                                        '<button type="button" class="btn btn-primary" onclick="RegistrationController.nextStep()">Next <i class="bi bi-arrow-right ms-2"></i></button>' :
-                                        '<button type="button" class="btn btn-success" onclick="RegistrationController.submitRegistration()"><i class="bi bi-check-circle me-2"></i>Complete Registration</button>'
+                                    ${
+                                      this.currentStep < this.totalSteps
+                                        ? '<button type="button" class="btn btn-primary" onclick="RegistrationController.nextStep()">Next <i class="bi bi-arrow-right ms-2"></i></button>'
+                                        : '<button type="button" class="btn btn-success" onclick="RegistrationController.submitRegistration()"><i class="bi bi-check-circle me-2"></i>Complete Registration</button>'
                                     }
                                 </div>
                             </div>
@@ -78,38 +80,38 @@ class RegistrationController {
                 </div>
             </div>
         `;
-        
-        pageContent.innerHTML = registrationHtml;
-        pageContent.classList.add('fade-in');
-        
-        // Setup step-specific functionality
-        this.setupStepFunctionality();
+
+    pageContent.innerHTML = registrationHtml;
+    pageContent.classList.add('fade-in');
+
+    // Setup step-specific functionality
+    this.setupStepFunctionality();
+  }
+
+  /**
+   * Render content for specific step
+   */
+  static renderStep(step) {
+    switch (step) {
+      case 1:
+        return this.renderAccountStep();
+      case 2:
+        return this.renderPatientDetailsStep();
+      case 3:
+        return this.renderProgramStep();
+      case 4:
+        return this.renderConsentReviewStep();
+      default:
+        return '<p>Invalid step</p>';
     }
-    
-    /**
-     * Render content for specific step
-     */
-    static renderStep(step) {
-        switch (step) {
-            case 1:
-                return this.renderAccountStep();
-            case 2:
-                return this.renderPatientDetailsStep();
-            case 3:
-                return this.renderProgramStep();
-            case 4:
-                return this.renderConsentReviewStep();
-            default:
-                return '<p>Invalid step</p>';
-        }
-    }
-    
-    /**
-     * Step 1: Account Information
-     */
-    static renderAccountStep() {
-        const data = this.registrationForm.account;
-        return `
+  }
+
+  /**
+   * Step 1: Account Information
+   */
+  static renderAccountStep() {
+    const data = this.registrationForm.account;
+    return `
             <h5 class="mb-4">Account Information</h5>
             <div class="validation-summary"></div>
             
@@ -137,14 +139,14 @@ class RegistrationController {
                 </div>
             </form>
         `;
-    }
-    
-    /**
-     * Step 2: Patient Details
-     */
-    static renderPatientDetailsStep() {
-        const data = this.registrationForm.patient;
-        return `
+  }
+
+  /**
+   * Step 2: Patient Details
+   */
+  static renderPatientDetailsStep() {
+    const data = this.registrationForm.patient;
+    return `
             <h5 class="mb-4">Patient Information</h5>
             <div class="validation-summary"></div>
             
@@ -218,14 +220,14 @@ class RegistrationController {
                 </div>
             </form>
         `;
-    }
-    
-    /**
-     * Step 3: Program & Insurance
-     */
-    static renderProgramStep() {
-        const data = this.registrationForm.program;
-        return `
+  }
+
+  /**
+   * Step 3: Program & Insurance
+   */
+  static renderProgramStep() {
+    const data = this.registrationForm.program;
+    return `
             <h5 class="mb-4">Program & Insurance Information</h5>
             <div class="validation-summary"></div>
             
@@ -278,14 +280,14 @@ class RegistrationController {
                 </div>
             </form>
         `;
-    }
-    
-    /**
-     * Step 4: Consent & Review
-     */
-    static renderConsentReviewStep() {
-        const data = this.registrationForm.consent;
-        return `
+  }
+
+  /**
+   * Step 4: Consent & Review
+   */
+  static renderConsentReviewStep() {
+    const data = this.registrationForm.consent;
+    return `
             <h5 class="mb-4">Consent & Review</h5>
             <div class="validation-summary"></div>
             
@@ -352,384 +354,390 @@ class RegistrationController {
                 </div>
             </form>
         `;
+  }
+
+  /**
+   * Setup functionality for current step
+   */
+  static setupStepFunctionality() {
+    // Setup validation for current step
+    this.setupStepValidation();
+
+    // Auto-save form data on input
+    this.setupAutoSave();
+
+    // Focus first input
+    setTimeout(() => {
+      const firstInput = document.querySelector('#step-content input:not([type="hidden"])');
+      if (firstInput) firstInput.focus();
+    }, 100);
+  }
+
+  /**
+   * Setup validation for current step
+   */
+  static setupStepValidation() {
+    const forms = document.querySelectorAll('#step-content form');
+
+    forms.forEach((form) => {
+      const validationRules = this.getValidationRulesForStep(this.currentStep);
+      if (validationRules) {
+        ValidationService.setupRealtimeValidation(form, validationRules);
+      }
+    });
+  }
+
+  /**
+   * Get validation rules for specific step
+   */
+  static getValidationRulesForStep(step) {
+    switch (step) {
+      case 1: // Account
+        return {
+          email: [ValidationService.validators.required, ValidationService.validators.email],
+          password: [
+            ValidationService.validators.required,
+            ValidationService.validators.minLength(6),
+          ],
+          confirmPassword: [ValidationService.validators.required],
+        };
+
+      case 2: // Patient Details
+        return {
+          firstName: [ValidationService.validators.required],
+          lastName: [ValidationService.validators.required],
+          dateOfBirth: [ValidationService.validators.required, ValidationService.validators.date],
+          phone: [ValidationService.validators.required],
+          street: [ValidationService.validators.required],
+          city: [ValidationService.validators.required],
+          state: [ValidationService.validators.required],
+          zipCode: [ValidationService.validators.required],
+        };
+
+      case 3: // Program
+        return {
+          medication: [ValidationService.validators.required],
+          program: [ValidationService.validators.required],
+          insuranceProvider: [ValidationService.validators.required],
+          memberId: [ValidationService.validators.required],
+        };
+
+      case 4: // Consent
+        return {
+          privacyPolicy: [ValidationService.validators.required],
+        };
+
+      default:
+        return null;
     }
-    
-    /**
-     * Setup functionality for current step
-     */
-    static setupStepFunctionality() {
-        // Setup validation for current step
-        this.setupStepValidation();
-        
-        // Auto-save form data on input
-        this.setupAutoSave();
-        
-        // Focus first input
-        setTimeout(() => {
-            const firstInput = document.querySelector('#step-content input:not([type="hidden"])');
-            if (firstInput) firstInput.focus();
-        }, 100);
-    }
-    
-    /**
-     * Setup validation for current step
-     */
-    static setupStepValidation() {
-        const forms = document.querySelectorAll('#step-content form');
-        
-        forms.forEach(form => {
-            const validationRules = this.getValidationRulesForStep(this.currentStep);
-            if (validationRules) {
-                ValidationService.setupRealtimeValidation(form, validationRules);
-            }
-        });
-    }
-    
-    /**
-     * Get validation rules for specific step
-     */
-    static getValidationRulesForStep(step) {
-        switch (step) {
-            case 1: // Account
-                return {
-                    email: [
-                        ValidationService.validators.required,
-                        ValidationService.validators.email
-                    ],
-                    password: [
-                        ValidationService.validators.required,
-                        ValidationService.validators.minLength(6)
-                    ],
-                    confirmPassword: [
-                        ValidationService.validators.required
-                    ]
-                };
-            
-            case 2: // Patient Details
-                return {
-                    firstName: [ValidationService.validators.required],
-                    lastName: [ValidationService.validators.required],
-                    dateOfBirth: [
-                        ValidationService.validators.required,
-                        ValidationService.validators.date
-                    ],
-                    phone: [ValidationService.validators.required],
-                    street: [ValidationService.validators.required],
-                    city: [ValidationService.validators.required],
-                    state: [ValidationService.validators.required],
-                    zipCode: [ValidationService.validators.required]
-                };
-            
-            case 3: // Program
-                return {
-                    medication: [ValidationService.validators.required],
-                    program: [ValidationService.validators.required],
-                    insuranceProvider: [ValidationService.validators.required],
-                    memberId: [ValidationService.validators.required]
-                };
-            
-            case 4: // Consent
-                return {
-                    privacyPolicy: [ValidationService.validators.required]
-                };
-            
-            default:
-                return null;
-        }
-    }
-    
-    /**
-     * Setup auto-save functionality
-     */
-    static setupAutoSave() {
-        const inputs = document.querySelectorAll('#step-content input, #step-content select, #step-content textarea');
-        
-        inputs.forEach(input => {
-            input.addEventListener('input', () => {
-                this.saveCurrentStepData();
-            });
-            
-            input.addEventListener('change', () => {
-                this.saveCurrentStepData();
-            });
-        });
-    }
-    
-    /**
-     * Save current step data to form model
-     */
-    static saveCurrentStepData() {
-        const form = document.querySelector('#step-content form');
-        if (!form) return;
-        
-        const formData = new FormData(form);
-        
-        switch (this.currentStep) {
-            case 1: // Account
-                this.registrationForm.account = {
-                    email: formData.get('email') || '',
-                    password: formData.get('password') || '',
-                    confirmPassword: formData.get('confirmPassword') || ''
-                };
-                break;
-                
-            case 2: // Patient Details
-                this.registrationForm.patient = {
-                    firstName: formData.get('firstName') || '',
-                    lastName: formData.get('lastName') || '',
-                    dateOfBirth: formData.get('dateOfBirth') || '',
-                    phone: formData.get('phone') || '',
-                    address: {
-                        street: formData.get('street') || '',
-                        city: formData.get('city') || '',
-                        state: formData.get('state') || '',
-                        zipCode: formData.get('zipCode') || ''
-                    }
-                };
-                break;
-                
-            case 3: // Program
-                this.registrationForm.program = {
-                    medication: formData.get('medication') || '',
-                    program: formData.get('program') || '',
-                    insurance: {
-                        provider: formData.get('insuranceProvider') || '',
-                        memberId: formData.get('memberId') || '',
-                        groupNumber: formData.get('groupNumber') || ''
-                    }
-                };
-                break;
-                
-            case 4: // Consent
-                this.registrationForm.consent = {
-                    privacyPolicy: formData.get('privacyPolicy') === 'on',
-                    emailCommunication: formData.get('emailCommunication') === 'on',
-                    smsCommunication: formData.get('smsCommunication') === 'on'
-                };
-                break;
-        }
-        
-        // Save to localStorage
-        this.saveProgress();
-    }
-    
-    /**
-     * Validate current step
-     */
-    static validateCurrentStep() {
-        const form = document.querySelector('#step-content form');
-        if (!form) return { isValid: true };
-        
-        // Get current step data
-        const formData = new FormData(form);
-        const stepData = {};
-        
-        for (const [key, value] of formData.entries()) {
-            stepData[key] = value;
-        }
-        
-        // Special validation for password confirmation
-        if (this.currentStep === 1) {
-            const password = stepData.password;
-            const confirmPassword = stepData.confirmPassword;
-            
-            if (password !== confirmPassword) {
-                const confirmInput = document.getElementById('confirmPassword');
-                if (confirmInput) {
-                    confirmInput.classList.add('is-invalid');
-                    const errorDiv = document.getElementById('confirmPassword-error');
-                    if (errorDiv) {
-                        errorDiv.textContent = 'Passwords must match';
-                        errorDiv.className = 'invalid-feedback d-block';
-                    }
-                }
-                return { isValid: false };
-            }
-        }
-        
-        // Get validation rules and validate
-        const validationRules = this.getValidationRulesForStep(this.currentStep);
-        if (!validationRules) return { isValid: true };
-        
-        const result = ValidationService.validateForm(stepData, validationRules);
-        
-        // Display validation summary if errors
-        if (!result.isValid) {
-            ValidationService.displayValidationSummary(form, result);
-        }
-        
-        return result;
-    }
-    
-    /**
-     * Navigate to next step
-     */
-    static async nextStep() {
-        // Save current step data
+  }
+
+  /**
+   * Setup auto-save functionality
+   */
+  static setupAutoSave() {
+    const inputs = document.querySelectorAll(
+      '#step-content input, #step-content select, #step-content textarea'
+    );
+
+    inputs.forEach((input) => {
+      input.addEventListener('input', () => {
         this.saveCurrentStepData();
-        
-        // Validate current step
-        const validation = this.validateCurrentStep();
-        if (!validation.isValid) {
-            notificationService.showError('Please correct the errors below before continuing.');
-            return;
-        }
-        
-        // Move to next step
-        if (this.currentStep < this.totalSteps) {
-            this.currentStep++;
-            await this.showRegistration({ step: this.currentStep });
-        }
-    }
-    
-    /**
-     * Navigate to previous step
-     */
-    static async previousStep() {
-        // Save current step data (no validation required)
+      });
+
+      input.addEventListener('change', () => {
         this.saveCurrentStepData();
-        
-        // Move to previous step
-        if (this.currentStep > 1) {
-            this.currentStep--;
-            await this.showRegistration({ step: this.currentStep });
-        }
+      });
+    });
+  }
+
+  /**
+   * Save current step data to form model
+   */
+  static saveCurrentStepData() {
+    const form = document.querySelector('#step-content form');
+    if (!form) return;
+
+    const formData = new FormData(form);
+
+    switch (this.currentStep) {
+      case 1: // Account
+        this.registrationForm.account = {
+          email: formData.get('email') || '',
+          password: formData.get('password') || '',
+          confirmPassword: formData.get('confirmPassword') || '',
+        };
+        break;
+
+      case 2: // Patient Details
+        this.registrationForm.patient = {
+          firstName: formData.get('firstName') || '',
+          lastName: formData.get('lastName') || '',
+          dateOfBirth: formData.get('dateOfBirth') || '',
+          phone: formData.get('phone') || '',
+          address: {
+            street: formData.get('street') || '',
+            city: formData.get('city') || '',
+            state: formData.get('state') || '',
+            zipCode: formData.get('zipCode') || '',
+          },
+        };
+        break;
+
+      case 3: // Program
+        this.registrationForm.program = {
+          medication: formData.get('medication') || '',
+          program: formData.get('program') || '',
+          insurance: {
+            provider: formData.get('insuranceProvider') || '',
+            memberId: formData.get('memberId') || '',
+            groupNumber: formData.get('groupNumber') || '',
+          },
+        };
+        break;
+
+      case 4: // Consent
+        this.registrationForm.consent = {
+          privacyPolicy: formData.get('privacyPolicy') === 'on',
+          emailCommunication: formData.get('emailCommunication') === 'on',
+          smsCommunication: formData.get('smsCommunication') === 'on',
+        };
+        break;
     }
-    
-    /**
-     * Submit complete registration
-     */
-    static async submitRegistration() {
-        try {
-            // Save current step data
-            this.saveCurrentStepData();
-            
-            // Validate final step
-            const validation = this.validateCurrentStep();
-            if (!validation.isValid) {
-                notificationService.showError('Please correct the errors below before submitting.');
-                return;
-            }
-            
-            // Validate required consent
-            if (!this.registrationForm.consent.privacyPolicy) {
-                notificationService.showError('You must agree to the Privacy Policy to complete registration.');
-                return;
-            }
-            
-            // Show loading state
-            const submitBtn = document.querySelector('button[onclick="RegistrationController.submitRegistration()"]');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Completing Registration...';
-            submitBtn.disabled = true;
-            
-            // Submit registration
-            const result = await dataService.registerPatient(this.registrationForm);
-            
-            if (result.success) {
-                notificationService.showSuccess('Registration completed successfully! Welcome to the patient portal.');
-                
-                // Clear saved progress
-                this.clearProgress();
-                
-                // Auto-login the new user
-                const loginResult = await authService.login(
-                    this.registrationForm.account.email, 
-                    this.registrationForm.account.password
-                );
-                
-                if (loginResult.success) {
-                    // Small delay then redirect
-                    setTimeout(() => {
-                        routingService.navigate('dashboard');
-                    }, 1500);
-                } else {
-                    // Registration succeeded but auto-login failed
-                    notificationService.showInfo('Registration complete! Please log in with your new credentials.');
-                    setTimeout(() => {
-                        routingService.navigate('login');
-                    }, 2000);
-                }
-            } else {
-                notificationService.showError(result.message || 'Registration failed. Please try again.');
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            }
-            
-        } catch (error) {
-            console.error('Registration error:', error);
-            notificationService.showError('Registration failed due to a technical error. Please try again.');
-            
-            // Restore button state
-            const submitBtn = document.querySelector('button[onclick="RegistrationController.submitRegistration()"]');
-            if (submitBtn) {
-                submitBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>Complete Registration';
-                submitBtn.disabled = false;
-            }
-        }
+
+    // Save to localStorage
+    this.saveProgress();
+  }
+
+  /**
+   * Validate current step
+   */
+  static validateCurrentStep() {
+    const form = document.querySelector('#step-content form');
+    if (!form) return { isValid: true };
+
+    // Get current step data
+    const formData = new FormData(form);
+    const stepData = {};
+
+    for (const [key, value] of formData.entries()) {
+      stepData[key] = value;
     }
-    
-    /**
-     * Save progress to localStorage
-     */
-    static saveProgress() {
-        try {
-            const progressData = {
-                step: this.currentStep,
-                form: this.registrationForm,
-                timestamp: new Date().toISOString()
-            };
-            
-            localStorage.setItem('patientPortal_registrationProgress', JSON.stringify(progressData));
-        } catch (error) {
-            console.error('Failed to save registration progress:', error);
+
+    // Special validation for password confirmation
+    if (this.currentStep === 1) {
+      const password = stepData.password;
+      const confirmPassword = stepData.confirmPassword;
+
+      if (password !== confirmPassword) {
+        const confirmInput = document.getElementById('confirmPassword');
+        if (confirmInput) {
+          confirmInput.classList.add('is-invalid');
+          const errorDiv = document.getElementById('confirmPassword-error');
+          if (errorDiv) {
+            errorDiv.textContent = 'Passwords must match';
+            errorDiv.className = 'invalid-feedback d-block';
+          }
         }
+        return { isValid: false };
+      }
     }
-    
-    /**
-     * Load saved progress from localStorage
-     */
-    static loadSavedProgress() {
-        try {
-            const progressData = localStorage.getItem('patientPortal_registrationProgress');
-            if (progressData) {
-                const parsed = JSON.parse(progressData);
-                
-                // Check if progress is recent (within 24 hours)
-                const timestamp = new Date(parsed.timestamp);
-                const now = new Date();
-                const hours = (now - timestamp) / (1000 * 60 * 60);
-                
-                if (hours < 24) {
-                    this.currentStep = parsed.step || 1;
-                    this.registrationForm = parsed.form || new RegistrationForm();
-                    
-                    console.log('Registration progress restored');
-                    return true;
-                }
-            }
-        } catch (error) {
-            console.error('Failed to load registration progress:', error);
+
+    // Get validation rules and validate
+    const validationRules = this.getValidationRulesForStep(this.currentStep);
+    if (!validationRules) return { isValid: true };
+
+    const result = ValidationService.validateForm(stepData, validationRules);
+
+    // Display validation summary if errors
+    if (!result.isValid) {
+      ValidationService.displayValidationSummary(form, result);
+    }
+
+    return result;
+  }
+
+  /**
+   * Navigate to next step
+   */
+  static async nextStep() {
+    // Save current step data
+    this.saveCurrentStepData();
+
+    // Validate current step
+    const validation = this.validateCurrentStep();
+    if (!validation.isValid) {
+      notificationService.showError('Please correct the errors below before continuing.');
+      return;
+    }
+
+    // Move to next step
+    if (this.currentStep < this.totalSteps) {
+      this.currentStep++;
+      await this.showRegistration({ step: this.currentStep });
+    }
+  }
+
+  /**
+   * Navigate to previous step
+   */
+  static async previousStep() {
+    // Save current step data (no validation required)
+    this.saveCurrentStepData();
+
+    // Move to previous step
+    if (this.currentStep > 1) {
+      this.currentStep--;
+      await this.showRegistration({ step: this.currentStep });
+    }
+  }
+
+  /**
+   * Submit complete registration
+   */
+  static async submitRegistration() {
+    try {
+      // Save current step data
+      this.saveCurrentStepData();
+
+      // Validate final step
+      const validation = this.validateCurrentStep();
+      if (!validation.isValid) {
+        notificationService.showError('Please correct the errors below before submitting.');
+        return;
+      }
+
+      // Validate required consent
+      if (!this.registrationForm.consent.privacyPolicy) {
+        notificationService.showError(
+          'You must agree to the Privacy Policy to complete registration.'
+        );
+        return;
+      }
+
+      // Show loading state
+      const submitBtn = document.querySelector(
+        'button[onclick="RegistrationController.submitRegistration()"]'
+      );
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML =
+        '<span class="spinner-border spinner-border-sm me-2"></span>Completing Registration...';
+      submitBtn.disabled = true;
+
+      // Submit registration
+      const result = await dataService.registerPatient(this.registrationForm);
+
+      if (result.success) {
+        notificationService.showSuccess(
+          'Registration completed successfully! Welcome to the patient portal.'
+        );
+
+        // Clear saved progress
+        this.clearProgress();
+
+        // Auto-login the new user
+        const loginResult = await authService.login(
+          this.registrationForm.account.email,
+          this.registrationForm.account.password
+        );
+
+        if (loginResult.success) {
+          // Small delay then redirect
+          setTimeout(() => {
+            routingService.navigate('dashboard');
+          }, 1500);
+        } else {
+          // Registration succeeded but auto-login failed
+          notificationService.showInfo(
+            'Registration complete! Please log in with your new credentials.'
+          );
+          setTimeout(() => {
+            routingService.navigate('login');
+          }, 2000);
         }
-        
-        // Reset to defaults if no valid progress
-        this.currentStep = 1;
-        this.registrationForm = new RegistrationForm();
-        return false;
+      } else {
+        notificationService.showError(result.message || 'Registration failed. Please try again.');
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      notificationService.showError(
+        'Registration failed due to a technical error. Please try again.'
+      );
+
+      // Restore button state
+      const submitBtn = document.querySelector(
+        'button[onclick="RegistrationController.submitRegistration()"]'
+      );
+      if (submitBtn) {
+        submitBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>Complete Registration';
+        submitBtn.disabled = false;
+      }
     }
-    
-    /**
-     * Clear saved progress
-     */
-    static clearProgress() {
-        try {
-            localStorage.removeItem('patientPortal_registrationProgress');
-            this.currentStep = 1;
-            this.registrationForm = new RegistrationForm();
-        } catch (error) {
-            console.error('Failed to clear registration progress:', error);
+  }
+
+  /**
+   * Save progress to localStorage
+   */
+  static saveProgress() {
+    try {
+      const progressData = {
+        step: this.currentStep,
+        form: this.registrationForm,
+        timestamp: new Date().toISOString(),
+      };
+
+      localStorage.setItem('patientPortal_registrationProgress', JSON.stringify(progressData));
+    } catch (error) {
+      console.error('Failed to save registration progress:', error);
+    }
+  }
+
+  /**
+   * Load saved progress from localStorage
+   */
+  static loadSavedProgress() {
+    try {
+      const progressData = localStorage.getItem('patientPortal_registrationProgress');
+      if (progressData) {
+        const parsed = JSON.parse(progressData);
+
+        // Check if progress is recent (within 24 hours)
+        const timestamp = new Date(parsed.timestamp);
+        const now = new Date();
+        const hours = (now - timestamp) / (1000 * 60 * 60);
+
+        if (hours < 24) {
+          this.currentStep = parsed.step || 1;
+          this.registrationForm = parsed.form || new RegistrationForm();
+
+          console.log('Registration progress restored');
+          return true;
         }
+      }
+    } catch (error) {
+      console.error('Failed to load registration progress:', error);
     }
+
+    // Reset to defaults if no valid progress
+    this.currentStep = 1;
+    this.registrationForm = new RegistrationForm();
+    return false;
+  }
+
+  /**
+   * Clear saved progress
+   */
+  static clearProgress() {
+    try {
+      localStorage.removeItem('patientPortal_registrationProgress');
+      this.currentStep = 1;
+      this.registrationForm = new RegistrationForm();
+    } catch (error) {
+      console.error('Failed to clear registration progress:', error);
+    }
+  }
 }
 
 // Make globally available for inline event handlers

@@ -9,20 +9,20 @@ import notificationService from '../services/notificationService.js';
 import ValidationService from '../services/validationService.js';
 
 class AuthController {
-    /**
-     * Show login page
-     * Similar to ASP.NET Core Login GET action
-     */
-    static async showLogin(params = {}) {
-        const pageContent = document.getElementById('page-content');
-        
-        // Check if already authenticated
-        if (authService.checkAuthentication()) {
-            routingService.navigate('dashboard');
-            return;
-        }
+  /**
+   * Show login page
+   * Similar to ASP.NET Core Login GET action
+   */
+  static async showLogin(params = {}) {
+    const pageContent = document.getElementById('page-content');
 
-        const loginHtml = `
+    // Check if already authenticated
+    if (authService.checkAuthentication()) {
+      routingService.navigate('dashboard');
+      return;
+    }
+
+    const loginHtml = `
             <div class="row justify-content-center">
                 <div class="col-md-6 col-lg-4">
                     <div class="card shadow">
@@ -89,161 +89,152 @@ class AuthController {
             </div>
         `;
 
-        pageContent.innerHTML = loginHtml;
-        pageContent.classList.add('fade-in');
+    pageContent.innerHTML = loginHtml;
+    pageContent.classList.add('fade-in');
 
-        // Setup form validation
-        this.setupLoginValidation();
-        
-        // Setup form submission
-        this.setupLoginSubmission();
-        
-        // Focus on email field
-        setTimeout(() => {
-            document.getElementById('email').focus();
-        }, 100);
-    }
+    // Setup form validation
+    this.setupLoginValidation();
 
-    /**
-     * Setup login form validation
-     */
-    static setupLoginValidation() {
-        const form = document.getElementById('loginForm');
-        const validationRules = {
-            email: [
-                ValidationService.validators.required,
-                ValidationService.validators.email
-            ],
-            password: [
-                ValidationService.validators.required,
-                ValidationService.validators.minLength(6, 'Password must be at least 6 characters')
-            ]
-        };
+    // Setup form submission
+    this.setupLoginSubmission();
 
-        // Setup real-time validation
-        ValidationService.setupRealtimeValidation(form, validationRules);
-    }
+    // Focus on email field
+    setTimeout(() => {
+      document.getElementById('email').focus();
+    }, 100);
+  }
 
-    /**
-     * Setup login form submission
-     */
-    static setupLoginSubmission() {
-        const form = document.getElementById('loginForm');
-        const submitBtn = document.getElementById('loginBtn');
-        
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            // Get form data
-            const formData = new FormData(form);
-            const email = formData.get('email');
-            const password = formData.get('password');
-            const rememberMe = formData.get('rememberMe') === 'on';
+  /**
+   * Setup login form validation
+   */
+  static setupLoginValidation() {
+    const form = document.getElementById('loginForm');
+    const validationRules = {
+      email: [ValidationService.validators.required, ValidationService.validators.email],
+      password: [
+        ValidationService.validators.required,
+        ValidationService.validators.minLength(6, 'Password must be at least 6 characters'),
+      ],
+    };
 
-            // Validate form
-            const validationRules = {
-                email: [
-                    ValidationService.validators.required,
-                    ValidationService.validators.email
-                ],
-                password: [
-                    ValidationService.validators.required,
-                    ValidationService.validators.minLength(6)
-                ]
-            };
+    // Setup real-time validation
+    ValidationService.setupRealtimeValidation(form, validationRules);
+  }
 
-            const validationResult = ValidationService.validateForm(
-                { email, password }, 
-                validationRules
-            );
+  /**
+   * Setup login form submission
+   */
+  static setupLoginSubmission() {
+    const form = document.getElementById('loginForm');
+    const submitBtn = document.getElementById('loginBtn');
 
-            if (!validationResult.isValid) {
-                ValidationService.displayValidationSummary(form, validationResult);
-                return;
-            }
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
 
-            // Show loading state
-            this.setLoginLoadingState(submitBtn, true);
+      // Get form data
+      const formData = new FormData(form);
+      const email = formData.get('email');
+      const password = formData.get('password');
+      const rememberMe = formData.get('rememberMe') === 'on';
 
-            try {
-                // Attempt login
-                const result = await authService.login(email, password);
-                
-                if (result.success) {
-                    notificationService.showSuccess('Login successful! Welcome back.');
-                    
-                    // Small delay for better UX
-                    setTimeout(() => {
-                        routingService.navigate('dashboard');
-                    }, 500);
-                } else {
-                    notificationService.showError(result.message);
-                    this.setLoginLoadingState(submitBtn, false);
-                }
-            } catch (error) {
-                console.error('Login error:', error);
-                notificationService.showError('Login failed. Please try again.');
-                this.setLoginLoadingState(submitBtn, false);
-            }
-        });
-    }
+      // Validate form
+      const validationRules = {
+        email: [ValidationService.validators.required, ValidationService.validators.email],
+        password: [
+          ValidationService.validators.required,
+          ValidationService.validators.minLength(6),
+        ],
+      };
 
-    /**
-     * Set login button loading state
-     */
-    static setLoginLoadingState(button, isLoading) {
-        const btnText = button.querySelector('.btn-text');
-        const btnSpinner = button.querySelector('.btn-spinner');
-        
-        if (isLoading) {
-            btnText.classList.add('d-none');
-            btnSpinner.classList.remove('d-none');
-            button.disabled = true;
+      const validationResult = ValidationService.validateForm({ email, password }, validationRules);
+
+      if (!validationResult.isValid) {
+        ValidationService.displayValidationSummary(form, validationResult);
+        return;
+      }
+
+      // Show loading state
+      this.setLoginLoadingState(submitBtn, true);
+
+      try {
+        // Attempt login
+        const result = await authService.login(email, password);
+
+        if (result.success) {
+          notificationService.showSuccess('Login successful! Welcome back.');
+
+          // Small delay for better UX
+          setTimeout(() => {
+            routingService.navigate('dashboard');
+          }, 500);
         } else {
-            btnText.classList.remove('d-none');
-            btnSpinner.classList.add('d-none');
-            button.disabled = false;
+          notificationService.showError(result.message);
+          this.setLoginLoadingState(submitBtn, false);
         }
-    }
+      } catch (error) {
+        console.error('Login error:', error);
+        notificationService.showError('Login failed. Please try again.');
+        this.setLoginLoadingState(submitBtn, false);
+      }
+    });
+  }
 
-    /**
-     * Logout user
-     * Similar to ASP.NET Core Logout action
-     */
-    static async logout() {
-        try {
-            const result = authService.logout();
-            notificationService.showInfo('You have been logged out successfully.');
-            // Routing service will handle redirect to login
-        } catch (error) {
-            console.error('Logout error:', error);
-            notificationService.showError('Logout failed. Please try again.');
-        }
-    }
+  /**
+   * Set login button loading state
+   */
+  static setLoginLoadingState(button, isLoading) {
+    const btnText = button.querySelector('.btn-text');
+    const btnSpinner = button.querySelector('.btn-spinner');
 
-    /**
-     * Check if user is authenticated
-     * Used by routing service for protected routes
-     */
-    static isAuthenticated() {
-        return authService.checkAuthentication();
+    if (isLoading) {
+      btnText.classList.add('d-none');
+      btnSpinner.classList.remove('d-none');
+      button.disabled = true;
+    } else {
+      btnText.classList.remove('d-none');
+      btnSpinner.classList.add('d-none');
+      button.disabled = false;
     }
+  }
 
-    /**
-     * Get current user information
-     */
-    static getCurrentUser() {
-        return authService.getCurrentUser();
+  /**
+   * Logout user
+   * Similar to ASP.NET Core Logout action
+   */
+  static async logout() {
+    try {
+      const result = authService.logout();
+      notificationService.showInfo('You have been logged out successfully.');
+      // Routing service will handle redirect to login
+    } catch (error) {
+      console.error('Logout error:', error);
+      notificationService.showError('Logout failed. Please try again.');
     }
+  }
 
-    /**
-     * Handle authentication errors
-     */
-    static handleAuthError(error) {
-        console.error('Authentication error:', error);
-        notificationService.showError('Session expired. Please log in again.');
-        authService.logout();
-    }
+  /**
+   * Check if user is authenticated
+   * Used by routing service for protected routes
+   */
+  static isAuthenticated() {
+    return authService.checkAuthentication();
+  }
+
+  /**
+   * Get current user information
+   */
+  static getCurrentUser() {
+    return authService.getCurrentUser();
+  }
+
+  /**
+   * Handle authentication errors
+   */
+  static handleAuthError(error) {
+    console.error('Authentication error:', error);
+    notificationService.showError('Session expired. Please log in again.');
+    authService.logout();
+  }
 }
 
 // Make globally available for inline event handlers

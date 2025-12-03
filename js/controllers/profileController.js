@@ -9,20 +9,20 @@ import notificationService from '../services/notificationService.js';
 import ValidationService from '../services/validationService.js';
 
 class ProfileController {
-    static async showProfile(params = {}) {
-        try {
-            const pageContent = document.getElementById('page-content');
-            const user = authService.getCurrentUser();
-            
-            if (!user) {
-                notificationService.showError('User session not found');
-                return;
-            }
+  static async showProfile(params = {}) {
+    try {
+      const pageContent = document.getElementById('page-content');
+      const user = authService.getCurrentUser();
 
-            // Load extended profile data
-            const profile = await dataService.getPatientProfile(user.id);
+      if (!user) {
+        notificationService.showError('User session not found');
+        return;
+      }
 
-            const profileHtml = `
+      // Load extended profile data
+      const profile = await dataService.getPatientProfile(user.id);
+
+      const profileHtml = `
                 <div class="fade-in">
                     <div class="row mb-4">
                         <div class="col-12">
@@ -129,19 +129,18 @@ class ProfileController {
                 </div>
             `;
 
-            pageContent.innerHTML = profileHtml;
-
-        } catch (error) {
-            console.error('Profile page error:', error);
-            notificationService.showError('Failed to load profile data');
-        }
+      pageContent.innerHTML = profileHtml;
+    } catch (error) {
+      console.error('Profile page error:', error);
+      notificationService.showError('Failed to load profile data');
     }
+  }
 
-    /**
-     * Render personal information tab
-     */
-    static renderPersonalInfoTab(profile) {
-        return `
+  /**
+   * Render personal information tab
+   */
+  static renderPersonalInfoTab(profile) {
+    return `
             <div class="card">
                 <div class="card-header">
                     <h5 class="mb-0">Personal Information</h5>
@@ -202,13 +201,13 @@ class ProfileController {
                 </div>
             </div>
         `;
-    }
+  }
 
-    /**
-     * Render contact information tab
-     */
-    static renderContactInfoTab(profile) {
-        return `
+  /**
+   * Render contact information tab
+   */
+  static renderContactInfoTab(profile) {
+    return `
             <div class="card">
                 <div class="card-header">
                     <h5 class="mb-0">Contact & Address Information</h5>
@@ -282,13 +281,13 @@ class ProfileController {
                 </div>
             </div>
         `;
-    }
+  }
 
-    /**
-     * Render preferences tab
-     */
-    static renderPreferencesTab(profile) {
-        return `
+  /**
+   * Render preferences tab
+   */
+  static renderPreferencesTab(profile) {
+    return `
             <div class="card">
                 <div class="card-header">
                     <h5 class="mb-0">Communication & Application Preferences</h5>
@@ -355,13 +354,13 @@ class ProfileController {
                 </div>
             </div>
         `;
-    }
+  }
 
-    /**
-     * Render security tab
-     */
-    static renderSecurityTab(profile) {
-        return `
+  /**
+   * Render security tab
+   */
+  static renderSecurityTab(profile) {
+    return `
             <div class="card">
                 <div class="card-header">
                     <h5 class="mb-0">Security Settings</h5>
@@ -391,14 +390,18 @@ class ProfileController {
                                 </tr>
                             </thead>
                             <tbody>
-                                ${profile.recentActivity.map(activity => `
+                                ${profile.recentActivity
+                                  .map(
+                                    (activity) => `
                                     <tr>
                                         <td>${activity.date}</td>
                                         <td>${activity.action}</td>
                                         <td>${activity.device}</td>
                                         <td>${activity.location}</td>
                                     </tr>
-                                `).join('')}
+                                `
+                                  )
+                                  .join('')}
                             </tbody>
                         </table>
                     </div>
@@ -429,99 +432,98 @@ class ProfileController {
                 </div>
             </div>
         `;
-    }
+  }
 
-    /**
-     * Change password functionality
-     */
-    static async changePassword() {
-        try {
-            const form = document.getElementById('changePasswordForm');
-            const formData = new FormData(form);
-            
-            const currentPassword = formData.get('currentPassword');
-            const newPassword = formData.get('newPassword');
-            const confirmPassword = formData.get('confirmPassword');
-            
-            // Validation
-            if (!currentPassword || !newPassword || !confirmPassword) {
-                notificationService.showError('Please fill in all password fields.');
-                return;
-            }
-            
-            if (newPassword !== confirmPassword) {
-                notificationService.showError('New passwords do not match.');
-                return;
-            }
-            
-            if (newPassword.length < 8) {
-                notificationService.showError('New password must be at least 8 characters long.');
-                return;
-            }
-            
-            // Show loading state
-            const submitBtn = document.querySelector('#changePasswordModal .btn-primary');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Updating...';
-            submitBtn.disabled = true;
+  /**
+   * Change password functionality
+   */
+  static async changePassword() {
+    try {
+      const form = document.getElementById('changePasswordForm');
+      const formData = new FormData(form);
 
-            const user = authService.getCurrentUser();
-            
-            // Change password
-            const result = await dataService.changePassword(user.id, currentPassword, newPassword);
-            
-            if (result.success) {
-                notificationService.showSuccess('Password changed successfully.');
-                
-                // Close modal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('changePasswordModal'));
-                modal.hide();
-                
-                // Clear form
-                form.reset();
-            } else {
-                notificationService.showError(result.message || 'Failed to change password.');
-            }
-            
-        } catch (error) {
-            console.error('Change password error:', error);
-            notificationService.showError('Failed to change password due to a technical error.');
-        } finally {
-            // Restore button state
-            const submitBtn = document.querySelector('#changePasswordModal .btn-primary');
-            if (submitBtn) {
-                submitBtn.innerHTML = 'Change Password';
-                submitBtn.disabled = false;
-            }
-        }
-    }
+      const currentPassword = formData.get('currentPassword');
+      const newPassword = formData.get('newPassword');
+      const confirmPassword = formData.get('confirmPassword');
 
-    /**
-     * Save security settings
-     */
-    static async saveSecuritySettings() {
-        try {
-            const shareDataResearch = document.getElementById('shareDataResearch').checked;
-            const twoFactorAuth = document.getElementById('twoFactorAuth').checked;
-            
-            const user = authService.getCurrentUser();
-            
-            const result = await dataService.updateSecuritySettings(user.id, {
-                shareDataForResearch: shareDataResearch,
-                twoFactorEnabled: twoFactorAuth
-            });
-            
-            if (result.success) {
-                notificationService.showSuccess('Security settings updated successfully.');
-            } else {
-                notificationService.showError(result.message || 'Failed to update security settings.');
-            }
-            
-        } catch (error) {
-            console.error('Security settings error:', error);
-            notificationService.showError('Failed to update security settings.');
-        }
+      // Validation
+      if (!currentPassword || !newPassword || !confirmPassword) {
+        notificationService.showError('Please fill in all password fields.');
+        return;
+      }
+
+      if (newPassword !== confirmPassword) {
+        notificationService.showError('New passwords do not match.');
+        return;
+      }
+
+      if (newPassword.length < 8) {
+        notificationService.showError('New password must be at least 8 characters long.');
+        return;
+      }
+
+      // Show loading state
+      const submitBtn = document.querySelector('#changePasswordModal .btn-primary');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML =
+        '<span class="spinner-border spinner-border-sm me-2"></span>Updating...';
+      submitBtn.disabled = true;
+
+      const user = authService.getCurrentUser();
+
+      // Change password
+      const result = await dataService.changePassword(user.id, currentPassword, newPassword);
+
+      if (result.success) {
+        notificationService.showSuccess('Password changed successfully.');
+
+        // Close modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('changePasswordModal'));
+        modal.hide();
+
+        // Clear form
+        form.reset();
+      } else {
+        notificationService.showError(result.message || 'Failed to change password.');
+      }
+    } catch (error) {
+      console.error('Change password error:', error);
+      notificationService.showError('Failed to change password due to a technical error.');
+    } finally {
+      // Restore button state
+      const submitBtn = document.querySelector('#changePasswordModal .btn-primary');
+      if (submitBtn) {
+        submitBtn.innerHTML = 'Change Password';
+        submitBtn.disabled = false;
+      }
     }
+  }
+
+  /**
+   * Save security settings
+   */
+  static async saveSecuritySettings() {
+    try {
+      const shareDataResearch = document.getElementById('shareDataResearch').checked;
+      const twoFactorAuth = document.getElementById('twoFactorAuth').checked;
+
+      const user = authService.getCurrentUser();
+
+      const result = await dataService.updateSecuritySettings(user.id, {
+        shareDataForResearch: shareDataResearch,
+        twoFactorEnabled: twoFactorAuth,
+      });
+
+      if (result.success) {
+        notificationService.showSuccess('Security settings updated successfully.');
+      } else {
+        notificationService.showError(result.message || 'Failed to update security settings.');
+      }
+    } catch (error) {
+      console.error('Security settings error:', error);
+      notificationService.showError('Failed to update security settings.');
+    }
+  }
 }
 
 // Make globally available

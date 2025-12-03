@@ -9,28 +9,28 @@ import notificationService from '../services/notificationService.js';
 import ValidationService from '../services/validationService.js';
 
 class DashboardController {
-    /**
-     * Show main dashboard
-     * Similar to ASP.NET Core Index action
-     */
-    static async showDashboard(params = {}) {
-        try {
-            const pageContent = document.getElementById('page-content');
-            const user = authService.getCurrentUser();
-            
-            if (!user) {
-                notificationService.showError('User session not found');
-                return;
-            }
+  /**
+   * Show main dashboard
+   * Similar to ASP.NET Core Index action
+   */
+  static async showDashboard(params = {}) {
+    try {
+      const pageContent = document.getElementById('page-content');
+      const user = authService.getCurrentUser();
 
-            // Load dashboard data
-            const [prescriptions, payments, requests] = await Promise.all([
-                dataService.getPrescriptionsByPatientId(user.id),
-                dataService.getPaymentsByPatientId(user.id),
-                dataService.getInformationRequestsByPatientId(user.id)
-            ]);
+      if (!user) {
+        notificationService.showError('User session not found');
+        return;
+      }
 
-            const dashboardHtml = `
+      // Load dashboard data
+      const [prescriptions, payments, requests] = await Promise.all([
+        dataService.getPrescriptionsByPatientId(user.id),
+        dataService.getPaymentsByPatientId(user.id),
+        dataService.getInformationRequestsByPatientId(user.id),
+      ]);
+
+      const dashboardHtml = `
                 <div class="fade-in">
                     <!-- Welcome Header -->
                     <div class="row mb-4">
@@ -87,7 +87,7 @@ class DashboardController {
                                     <div class="d-flex align-items-center">
                                         <i class="bi bi-exclamation-triangle fs-2 me-3"></i>
                                         <div>
-                                            <h5 class="card-title mb-0">${prescriptions.filter(p => !p.canRefill).length}</h5>
+                                            <h5 class="card-title mb-0">${prescriptions.filter((p) => !p.canRefill).length}</h5>
                                             <p class="card-text mb-0">Need Attention</p>
                                         </div>
                                     </div>
@@ -164,34 +164,33 @@ class DashboardController {
                 </div>
             `;
 
-            pageContent.innerHTML = dashboardHtml;
-
-        } catch (error) {
-            console.error('Dashboard error:', error);
-            notificationService.showError('Failed to load dashboard data');
-        }
+      pageContent.innerHTML = dashboardHtml;
+    } catch (error) {
+      console.error('Dashboard error:', error);
+      notificationService.showError('Failed to load dashboard data');
     }
+  }
 
-    /**
-     * Show information requests page
-     */
-    static async showRequests(params = {}) {
-        try {
-            const pageContent = document.getElementById('page-content');
-            const user = authService.getCurrentUser();
-            
-            if (!user) {
-                notificationService.showError('User session not found');
-                return;
-            }
+  /**
+   * Show information requests page
+   */
+  static async showRequests(params = {}) {
+    try {
+      const pageContent = document.getElementById('page-content');
+      const user = authService.getCurrentUser();
 
-            // Load requests and reference data
-            const [requests, requestTypes] = await Promise.all([
-                dataService.getInformationRequestsByPatientId(user.id),
-                dataService.getRequestTypes()
-            ]);
+      if (!user) {
+        notificationService.showError('User session not found');
+        return;
+      }
 
-            const requestsHtml = `
+      // Load requests and reference data
+      const [requests, requestTypes] = await Promise.all([
+        dataService.getInformationRequestsByPatientId(user.id),
+        dataService.getRequestTypes(),
+      ]);
+
+      const requestsHtml = `
                 <div class="fade-in">
                     <div class="row mb-4">
                         <div class="col-12">
@@ -214,7 +213,7 @@ class DashboardController {
                                                 <label for="requestType" class="form-label">Request Type</label>
                                                 <select class="form-control" id="requestType" name="requestType" required>
                                                     <option value="">Select request type...</option>
-                                                    ${requestTypes.map(type => `<option value="${type}">${type}</option>`).join('')}
+                                                    ${requestTypes.map((type) => `<option value="${type}">${type}</option>`).join('')}
                                                 </select>
                                                 <div id="requestType-error" class="invalid-feedback"></div>
                                             </div>
@@ -250,26 +249,27 @@ class DashboardController {
                 </div>
             `;
 
-            pageContent.innerHTML = requestsHtml;
-            
-            // Setup form submission
-            this.setupNewRequestForm();
+      pageContent.innerHTML = requestsHtml;
 
-        } catch (error) {
-            console.error('Requests page error:', error);
-            notificationService.showError('Failed to load requests data');
-        }
+      // Setup form submission
+      this.setupNewRequestForm();
+    } catch (error) {
+      console.error('Requests page error:', error);
+      notificationService.showError('Failed to load requests data');
+    }
+  }
+
+  /**
+   * Render recent prescriptions for dashboard
+   */
+  static renderRecentPrescriptions(prescriptions) {
+    if (!prescriptions.length) {
+      return '<p class="text-muted">No prescriptions found.</p>';
     }
 
-    /**
-     * Render recent prescriptions for dashboard
-     */
-    static renderRecentPrescriptions(prescriptions) {
-        if (!prescriptions.length) {
-            return '<p class="text-muted">No prescriptions found.</p>';
-        }
-
-        return prescriptions.map(rx => `
+    return prescriptions
+      .map(
+        (rx) => `
             <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
                 <div>
                     <h6 class="mb-1">${rx.medicationName}</h6>
@@ -281,18 +281,22 @@ class DashboardController {
                     <small class="text-muted">${rx.refillsRemaining} refills left</small>
                 </div>
             </div>
-        `).join('');
+        `
+      )
+      .join('');
+  }
+
+  /**
+   * Render recent requests for dashboard
+   */
+  static renderRecentRequests(requests) {
+    if (!requests.length) {
+      return '<p class="text-muted">No recent requests.</p>';
     }
 
-    /**
-     * Render recent requests for dashboard
-     */
-    static renderRecentRequests(requests) {
-        if (!requests.length) {
-            return '<p class="text-muted">No recent requests.</p>';
-        }
-
-        return requests.map(req => `
+    return requests
+      .map(
+        (req) => `
             <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
                 <div>
                     <h6 class="mb-1">${req.type}</h6>
@@ -300,18 +304,22 @@ class DashboardController {
                 </div>
                 <span class="badge bg-${req.statusClass}">${req.status}</span>
             </div>
-        `).join('');
+        `
+      )
+      .join('');
+  }
+
+  /**
+   * Render recent payments for dashboard
+   */
+  static renderRecentPayments(payments) {
+    if (!payments.length) {
+      return '<p class="text-muted">No recent payments.</p>';
     }
 
-    /**
-     * Render recent payments for dashboard
-     */
-    static renderRecentPayments(payments) {
-        if (!payments.length) {
-            return '<p class="text-muted">No recent payments.</p>';
-        }
-
-        return payments.map(payment => `
+    return payments
+      .map(
+        (payment) => `
             <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
                 <div>
                     <h6 class="mb-1">${payment.formattedAmount}</h6>
@@ -323,18 +331,20 @@ class DashboardController {
                     <small class="text-success">${payment.method}</small>
                 </div>
             </div>
-        `).join('');
+        `
+      )
+      .join('');
+  }
+
+  /**
+   * Render full requests list
+   */
+  static renderRequestsList(requests) {
+    if (!requests.length) {
+      return '<p class="text-muted">You haven\'t submitted any information requests yet.</p>';
     }
 
-    /**
-     * Render full requests list
-     */
-    static renderRequestsList(requests) {
-        if (!requests.length) {
-            return '<p class="text-muted">You haven\'t submitted any information requests yet.</p>';
-        }
-
-        return `
+    return `
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
@@ -347,7 +357,9 @@ class DashboardController {
                         </tr>
                     </thead>
                     <tbody>
-                        ${requests.map(req => `
+                        ${requests
+                          .map(
+                            (req) => `
                             <tr>
                                 <td>${req.type}</td>
                                 <td>${req.description}</td>
@@ -355,57 +367,59 @@ class DashboardController {
                                 <td><span class="badge bg-${req.statusClass}">${req.status}</span></td>
                                 <td>${req.dateUpdated || 'N/A'}</td>
                             </tr>
-                        `).join('')}
+                        `
+                          )
+                          .join('')}
                     </tbody>
                 </table>
             </div>
         `;
-    }
+  }
 
-    /**
-     * Setup new request form submission
-     */
-    static setupNewRequestForm() {
-        const form = document.getElementById('newRequestForm');
-        
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const formData = new FormData(form);
-            const requestType = formData.get('requestType');
-            const description = formData.get('description');
-            const user = authService.getCurrentUser();
+  /**
+   * Setup new request form submission
+   */
+  static setupNewRequestForm() {
+    const form = document.getElementById('newRequestForm');
 
-            // Basic validation
-            if (!requestType || !description.trim()) {
-                notificationService.showError('Please fill in all required fields.');
-                return;
-            }
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
 
-            try {
-                const result = await dataService.submitInformationRequest(
-                    user.id, 
-                    requestType, 
-                    description.trim()
-                );
-                
-                if (result.success) {
-                    notificationService.showSuccess(result.message);
-                    form.reset();
-                    
-                    // Reload page to show new request
-                    setTimeout(() => {
-                        this.showRequests();
-                    }, 1000);
-                } else {
-                    notificationService.showError(result.message);
-                }
-            } catch (error) {
-                console.error('Request submission error:', error);
-                notificationService.showError('Failed to submit request. Please try again.');
-            }
-        });
-    }
+      const formData = new FormData(form);
+      const requestType = formData.get('requestType');
+      const description = formData.get('description');
+      const user = authService.getCurrentUser();
+
+      // Basic validation
+      if (!requestType || !description.trim()) {
+        notificationService.showError('Please fill in all required fields.');
+        return;
+      }
+
+      try {
+        const result = await dataService.submitInformationRequest(
+          user.id,
+          requestType,
+          description.trim()
+        );
+
+        if (result.success) {
+          notificationService.showSuccess(result.message);
+          form.reset();
+
+          // Reload page to show new request
+          setTimeout(() => {
+            this.showRequests();
+          }, 1000);
+        } else {
+          notificationService.showError(result.message);
+        }
+      } catch (error) {
+        console.error('Request submission error:', error);
+        notificationService.showError('Failed to submit request. Please try again.');
+      }
+    });
+  }
 }
 
 // Make globally available
