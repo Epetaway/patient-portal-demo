@@ -90,8 +90,8 @@ export const designTokens = {
   // Typography Scale - Professional Healthcare
   typography: {
     fontFamily: {
-      primary: "'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif",
-      mono: "'Monaco', 'Courier New', monospace",
+      primary: '\'Segoe UI\', -apple-system, BlinkMacSystemFont, \'Roboto\', sans-serif',
+      mono: '\'Monaco\', \'Courier New\', monospace',
     },
 
     fontSize: {
